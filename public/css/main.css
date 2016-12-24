@@ -1,0 +1,8 @@
+.navbar-brand{
+    font-size: 25px;
+}
+
+.mylist li{
+    display: inline-block;
+    margin-left: 10px;
+}
