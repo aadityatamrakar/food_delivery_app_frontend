@@ -35,10 +35,10 @@ class LoginController extends Controller
     {
         $mobile = urlencode($request->mobile);
         $otp = rand(100000, 999999);
-        $message = urlencode("OTP: $otp , Kindly use this for Login. TromBoy.com");
-        //$res = file_get_contents("http://sms.hostingfever.in/sendSMS?username=spantech&message=$message&sendername=ONLINE&smstype=TRANS&numbers=$mobile&apikey=4d360261-78da-4d98-826c-d02a6771545c");
+        $message = urlencode("Verification Code: $otp , TromBoy.com");
+        $res = file_get_contents("http://sms.hostingfever.in/sendSMS?username=spantech&message=$message&sendername=ONLINE&smstype=TRANS&numbers=$mobile&apikey=4d360261-78da-4d98-826c-d02a6771545c");
         otp::create(['mobile'=>$request->mobile,'otp'=>$otp, 'res'=>'1']);
-        header('otp: '.$otp);
+        //header('otp: '.$otp);
 
         return ['status'=>'ok'];
     }
