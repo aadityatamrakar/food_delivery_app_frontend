@@ -33,8 +33,10 @@ Route::group(['middleware' => 'auth'], function(){
 
 Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
     Route::post('/otp/request', "ApiController@api_postOtp");
-    Route::post('/otp/check', "ApiController@api_check_otp");
+    Route::post('/register', 'ApiController@register');
+    Route::post('/login', 'ApiController@login');
 
-    Route::post('register', 'ApiController@register');
+    Route::get('/get_city', 'ApiController@get_city');
+    Route::get('/get_area/{city}', 'ApiController@get_area');
 
 });

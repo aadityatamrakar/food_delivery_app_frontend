@@ -215,13 +215,13 @@
                                 <input id="area_id" name="area_id" type="hidden" />
                                 <input disabled autocomplete="off" id="area" name="area" type="text" data-provide="typeahead" value="Area" placeholder="Area" onfocus="this.value=='Area'?this.value='':''" />
                                 <div class="row text-primary" style="padding: 5px 10px; font-size: 16px;">
-                                    <div class="col-md-4">
+                                    <div class="col-xs-4">
                                         <input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-xs-4">
                                         <input id="pickup" name="type" type="radio" value="pickup" /> <label for="pickup"><b>Pickup</b></label>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-xs-4">
                                         <input id="dinein" name="type" type="radio" value="dinein" /> <label for="dinein"><b>Dinein</b></label>
                                     </div>
                                 </div>
