@@ -38,5 +38,8 @@ Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
 
     Route::get('/get_city', 'ApiController@get_city');
     Route::get('/get_area/{city}', 'ApiController@get_area');
+    Route::get('/restaurant/{id}/get_menu', 'ApiController@get_menu');
+    Route::get('/restaurant/{area_id}/{type}', 'ApiController@get_restaurant');
+
 
 });
