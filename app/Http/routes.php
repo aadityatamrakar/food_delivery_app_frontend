@@ -35,11 +35,19 @@ Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
     Route::post('/otp/request', "ApiController@api_postOtp");
     Route::post('/register', 'ApiController@register');
     Route::post('/login', 'ApiController@login');
+    Route::post('/profile/update', 'ApiController@updateProfile');
+    Route::post('/pin_update', 'ApiController@updatePin');
+    Route::post('/check_coupon', 'ApiController@check_coupon');
+    Route::post('/place_order', 'ApiController@place_order');
+    Route::get('/order_status/{id}', 'ApiController@order_status');
 
     Route::get('/get_city', 'ApiController@get_city');
     Route::get('/get_area/{city}', 'ApiController@get_area');
     Route::get('/restaurant/{id}/get_menu', 'ApiController@get_menu');
     Route::get('/restaurant/{area_id}/{type}', 'ApiController@get_restaurant');
 
-
+    Route::get('/test', 'ApiController@test');
+    Route::post('/confirm_sms', 'ApiController@confirm_sms');
+    Route::get('/order_confirmation/{hash}', 'ApiController@get_restaurant_confirm_link')->name('order_confirm_link');
+    Route::post('/order_confirmation/{hash}', 'ApiController@restaurant_confirm_link');
 });

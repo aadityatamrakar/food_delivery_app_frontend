@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Category;
 use App\City;
 use App\Coupon;
+use App\Customer;
+use App\wallet;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Order;
@@ -12,6 +14,7 @@ use App\otp;
 use App\Product;
 use App\Restaurant;
 use Illuminate\Support\Facades\Auth;
+use Razorpay\Api\Api;
 
 class CartController extends Controller
 {
@@ -67,6 +70,7 @@ class CartController extends Controller
 
     public function checkout_confirm(Request $request)
     {
+
         $type = $request->type;
         $mobile = Auth::user()->mobile;
 //        $otp = otp::where('mobile', $mobile)->orderBy('created_at', 'desc')->first()->otp;
@@ -77,7 +81,7 @@ class CartController extends Controller
         $packing_fee = $type!='dinein'?$restaurant->packing_fee:0;
         $delivery_fee = $type=='delivery'?$restaurant->delivery_fee:0;
         $coupon_applied = false;
-
+        $cashback = 0;
 //        if ($otp != $request->otp_c)
 //            return redirect()->route('restaurant.view', ["id"=>$restaurant->id, 'name'=>$restaurant->title])->with(['info'=>'Invalid OTP', 'type'=>'danger']);
 
@@ -91,21 +95,31 @@ class CartController extends Controller
             $coupon = $c->check($request->coupon, Auth::user(), $gtotal);
             if($coupon->status == 'ok'){
                 $coupon_applied = true;
+                $dis = $gtotal*($coupon->percent/100);
                 if($coupon->return_type == 'discount')
                 {
-                    $dis = $gtotal*($coupon->percent/100);
                     if($dis>$coupon->max_amount)
                         $gtotal -= $coupon->max_amount;
                     else
                         $gtotal -= $dis;
                 }
+                elseif($coupon->return_type == 'cashback'){
+                    if($dis > $coupon->max_amount)
+                        $cashback = $coupon->max_amount;
+                    else
+                        $cashback = $dis;
+                }
             }
         }
         $gtotal+=$delivery_fee+$packing_fee;
 
-        // +TODO CASHBACK TO WALLET
-
         $cart_data = json_encode($cart);
+
+        $customer = Customer::find(Auth::user()->id);
+        if(isset($request->c_name) && $request->c_name != '') $customer->name = $request->c_name;
+        if(isset($request->c_email) && $request->c_email != '') $customer->email = $request->c_email;
+        if(isset($request->address) && $request->address != '') $customer->address = $request->address;
+        $customer->save();
 
         $order = Order::create([
             "user_id"       =>  Auth::user()->id,
@@ -118,16 +132,74 @@ class CartController extends Controller
             "coupon"        =>  $coupon_applied?$coupon->id:null,
             "delivery_fee"  =>  $delivery_fee,
             "packing_fee"   =>  $packing_fee,
+            "status"        =>  "WFRA",
         ]);
 
-        $user_message = urlencode("Dear ".Auth::user()->name.", Your Order has been recieved, Order No: ".$order->id.". TromBoy.com");
-        $restaurant_message = urlencode("NEW ORDER: ".$order->id.", Name:".Auth::user()->name." Mob:".Auth::user()->mobile." Add:".$order->address." Cart: [");
+        $api = new ApiController();
+        $customer = Auth::user();
+        $restaurant_message = "NEW:".$order->id.", Name:".substr($customer->name, strpos($customer->name, ' '))."(".$customer->mobile."), ".$order->address.", Cart: [";
         for($i=0; $i<count($cart); $i++)
-            $restaurant_message .= urlencode('{'.$cart[$i]['title'].' ('.$cart[$i]['quantity'].')},');
-        $restaurant_message .= urlencode("] Amt: ".$gtotal." TromBoy.com");
+            $restaurant_message .= $cart[$i]['title'].'-'.$cart[$i]['quantity'].', ';
+        $restaurant_message .= "] Amt: ".$gtotal.". To confirm order send '68J8D conf ".$order->id."' to 9220592205 or ".$api->confirm_order_link($order->id);
 
-        //$res = file_get_contents("http://sms.hostingfever.in/sendSMS?username=spantech&message=$user_message&sendername=ONLINE&smstype=TRANS&numbers=$mobile&apikey=4d360261-78da-4d98-826c-d02a6771545c");
-        //$res = file_get_contents("http://sms.hostingfever.in/sendSMS?username=spantech&message=$restaurant_message&sendername=ONLINE&smstype=TRANS&numbers=".urlencode($restaurant->contact_no)."&apikey=4d360261-78da-4d98-826c-d02a6771545c");
+        /*
+         * Notify Restaurant
+         */
+        $this->SendSMS($restaurant->contact_no, $restaurant_message);
+        $this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
+
+        if($request->payment_id != 'wallet'){
+            $wallet_amt = $request->wallet_amt;
+
+            $api = new Api('rzp_test_FMKzS7xs08EwP5', 'MtWbDKF84Ak4DqrD6tcuaBHw');
+            $payment = $api->payment->fetch($request->payment_id);
+            $payment->capture(array('amount' => ($gtotal-$wallet_amt)*100));
+
+            wallet::create([
+                "type"      =>  "added",
+                'capture'   =>  "success",
+                'mode'      =>  $payment->method.' - '.($payment->wallet),
+                'amount'    =>  ($gtotal-$wallet_amt),
+                'order_id'  =>  $order->id,
+                'user_id'   =>  Auth::user()->id,
+                'restaurant_id'=> $request->restaurant_id,
+            ]);
+
+            wallet::create([
+                "type"      =>  "paid_for_order",
+                'capture'   =>  "success",
+                'mode'      =>  "wallet",
+                'amount'    =>  $gtotal,
+                'order_id'  =>  $order->id,
+                'user_id'   =>  Auth::user()->id,
+                'restaurant_id'=> $request->restaurant_id,
+            ]);
+        }else{
+            wallet::create([
+                "type"      =>  "paid_for_order",
+                'capture'   =>  "success",
+                'mode'      =>  "wallet",
+                'amount'    =>  $gtotal,
+                'order_id'  =>  $order->id,
+                'user_id'   =>  Auth::user()->id,
+                'restaurant_id'=> $request->restaurant_id,
+            ]);
+        }
+
+        if($cashback > 0)
+        {
+            wallet::create([
+                "type"      =>  "cashback_recieved",
+                'capture'   =>  "success",
+                'mode'      =>  "system",
+                'amount'    =>  $cashback,
+                'order_id'  =>  $order->id,
+                'user_id'   =>  Auth::user()->id,
+                'restaurant_id'=> $request->restaurant_id,
+            ]);
+        }
+
+        //$user_message = urlencode("Dear ".Auth::user()->name.", Your Order has been recieved, Order No: ".$order->id.". TromBoy.com");
 
         return view('cart.confirm', compact('order'));
     }

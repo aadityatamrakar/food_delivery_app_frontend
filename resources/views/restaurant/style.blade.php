@@ -43,7 +43,7 @@
         padding: 0px;
     }
     .myheader{
-        background: url('/img/bg.jpg') fixed no-repeat;
+        background: url('/img/bg2.jpg') fixed no-repeat;
         background-size: cover;
         background-position: center;
         width: 100%;

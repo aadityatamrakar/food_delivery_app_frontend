@@ -1,4 +1,4 @@
-@extends('partials.home_app')
+@extends('partials.app')
 
 @section('style')
     <style>
@@ -6,7 +6,7 @@
         {
             padding: 0;
             margin: 0;
-            background: url('/img/bg.jpg') fixed;
+            background: url('https://images.pexels.com/photos/5928/salad-healthy-diet-spinach.jpg?w=940&h=650&auto=compress&cs=tinysrgb') fixed;
             background-size: cover;
             background-position: center;
             padding-top: 160px;
@@ -44,14 +44,14 @@
         @media (min-width: 990px) {
             form
             {
-                width: 350px;
+                padding: 10px 50px;
                 margin: 0 auto;
             }
 
             .mybox{
-
+                margin-top: 35px;
                 border:2px solid white;
-                width: 520px;
+                width: 620px;
                 background-color: rgba(255, 255, 255, 0.95);
                 -webkit-box-shadow: 0px 0px 49px 14px rgba(188,190,194,0.39);
                 -moz-box-shadow: 0px 0px 49px 14px rgba(188,190,194,0.39);
@@ -95,7 +95,7 @@
             color: #000;
             outline: 0;
 
-            border: 1px dotted #999;
+            border: 1px solid #ff8553;
         }
 
         form.login input[type="submit"]
@@ -191,6 +191,13 @@
         {
             transition: background-color 0.5s ease;
         }
+
+        .myBtnClr, .myBtnClr:hover, .myBtnClr:focus, .myBtnClr:active{
+            color: white;
+            background: #f85032; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to left, #f85032 , #e73827); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to left, #f85032 , #e73827); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        }
     </style>
 @endsection
 
@@ -205,28 +212,35 @@
                             <p class="form-title">
                                 Select Area & Order Information</p>
                             <form class="login" id="search_frm" method="post" action="{{ route('restaurant.index') }}">
-                                <select name="city" id="city">
-                                    <option>City</option>
-                                    @foreach(\App\City::all() as $city)
-                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                    @endforeach
-                                </select>
-                                {!! csrf_field() !!}
-                                <input id="area_id" name="area_id" type="hidden" />
-                                <input disabled autocomplete="off" id="area" name="area" type="text" data-provide="typeahead" value="Area" placeholder="Area" onfocus="this.value=='Area'?this.value='':''" />
-                                <div class="row text-primary" style="padding: 5px 10px; font-size: 16px;">
-                                    <div class="col-xs-4">
-                                        <input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <select name="city" id="city">
+                                            <option>City</option>
+                                            @foreach(\App\City::all() as $city)
+                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="col-xs-4">
-                                        <input id="pickup" name="type" type="radio" value="pickup" /> <label for="pickup"><b>Pickup</b></label>
-                                    </div>
-                                    <div class="col-xs-4">
-                                        <input id="dinein" name="type" type="radio" value="dinein" /> <label for="dinein"><b>Dinein</b></label>
+                                    <div class="col-sm-6">
+                                        <input disabled autocomplete="off" id="area" name="area" type="text" data-provide="typeahead" value="Area" placeholder="Area" onfocus="this.value=='Area'?this.value='':''" />
                                     </div>
                                 </div>
-                                <input type="submit" value="Go For It" id="sub_btn" class="btn btn-success btn-sm" />
+                                <input id="area_id" name="area_id" type="hidden" />
+                                {!! csrf_field() !!}
+                                <div class="row text-primary" style="padding: 5px 10px; font-size: 16px;">
+                                    <div class="col-sm-4">
+                                        <input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <input id="pickup" name="type" type="radio" value="pickup" /> <label for="pickup"><b>Pickup</b></label>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <input id="dinein" name="type" type="radio" value="dinein" /> <label for="dinein"><b>Eat at Restaurant</b></label>
+                                    </div>
+                                </div>
+                                <input type="submit" value="Show Restaurants" id="sub_btn" class="btn myBtnClr btn-sm" />
                             </form>
+                            <p style="margin: 0;">Currently, We are live in Indore.</p>
                         </div>
                     </center>
                 </div>

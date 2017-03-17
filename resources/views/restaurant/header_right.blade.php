@@ -23,7 +23,7 @@
     </div>
 </form>
 <form class="navbar-form navbar-right" action="{{ route('wallet') }}" method="get">
-    <button type="submit" class="btn btn-default"><i class="fa fa-folder-open" style="font-size: 18px;"></i> Wallet (<i class="fa fa-inr"></i> 0)</button>
+    <button type="submit" class="btn btn-default"><i class="fa fa-folder-open" style="font-size: 18px;"></i> Wallet (<i class="fa fa-inr"></i> {{ \App\Http\Controllers\WalletController::balance() }})</button>
 </form>
 
 @section('area_script')

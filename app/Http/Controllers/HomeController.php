@@ -22,14 +22,12 @@ class HomeController extends Controller
         }
 
     }
-
     public function getArea()
     {
         $areas = Area::select(['id', 'name'])->Where([['city_id', $_GET['c']], ['name', 'like', '%'.$_GET['q'].'%']])->get();
 
         return json_encode($areas);
     }
-
     public function getRestaurant(Request $request)
     {
         $area = Area::where('id', $request->get('area_id'))->first();
@@ -59,7 +57,6 @@ class HomeController extends Controller
 
         return view('restaurant.index', compact(['restaurants', 'area', 'closed']));
     }
-
     public function viewRestaurant($type, $id, $name)
     {
         $area = Area::where('id', session('area_id'))->first();
@@ -75,7 +72,6 @@ class HomeController extends Controller
 
         return view('restaurant.closed', compact(['restaurant', 'area', 'type']));
     }
-
     public function coupon_check(Request $request)
     {
         $gtotal = $request->gtotal;
@@ -91,7 +87,6 @@ class HomeController extends Controller
 
         return $data;
     }
-
     public function check_hours($hours, $restaurant)
     {
         $time = json_decode($hours, true);
@@ -103,4 +98,5 @@ class HomeController extends Controller
             return Carbon::now()->between($open, $close);
         }
     }
+
 }

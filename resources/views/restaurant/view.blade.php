@@ -1,6 +1,7 @@
 @extends('partials.app')
 
 @section('style')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/css/bootstrap-dialog.min.css"  />
     @include('restaurant.style')
     <style>
         .onoffswitch {
@@ -60,24 +61,24 @@
 
 @section('header')
     <div class="myheader" style="margin-top: 95px;">
-        <center><img style="box-shadow: 2px 2px 2px rgba(0,0,0,0.7);" src="http://foodadmin.local/images/restaurant/logo/{{ $restaurant->logo }}" width="100px" height="100px" /></center>
-        <center><h1 style="margin: 0px; margin-top: -15px; padding: 0px 0px 15px 0px; color:white; text-shadow: 2px 2px 2px red;">:: Welcome to {{ $restaurant->name }} ::</h1></center>
+        <center><img style="box-shadow: 2px 2px 2px rgba(0,0,0,0.7);" src="//admin.tromboy.com/images/restaurant/logo/{{ $restaurant->logo }}" width="100px" height="100px" /></center>
+        <center><h1 style="margin: 0px; padding: 0px 0px 15px 0px; color:white; text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.6);">:: {{ $restaurant->name }} ::</h1></center>
     </div>
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-md-8">
-            <div class="panel panel-warning">
+            <div class="panel panel-default">
                 <div class="panel-heading">
-                    <div class="panel-title" style="text-transform: capitalize;">{{ $type }} Menu</div>
+                    <div class="panel-title" style="text-transform: capitalize; font-weight: bold;">{{ $type }} Menu</div>
                 </div>
-                <div class="panel-body" style="height: 800px;">
+                <div class="panel-body">
                     <div class="row">
                         <div class="col-md-3">
                             <ul class="nav nav-pills nav-stacked" role="tablist" style="font-weight: bold;">
                                 @foreach($restaurant->categories as $index=>$category)
-                                    <li role="presentation" class="{{ $index==0?"active":'' }}"><a href="#{{ str_replace(' ', '_', $category->title) }}" aria-controls="{{ str_replace(' ', '_', $category->title) }}" role="tab" data-toggle="tab">{{ $category->title }}</a></li>
+                                    <li role="presentation" class="{{ $index==0?"active":'' }}"><a href="#{{ str_replace(' ', '_', $category->title) }}" aria-controls="{{ str_replace(' ', '_', $category->title) }}" role="tab" data-toggle="tab">{{ $category->title }} <span class="badge">{{ count($category->products) }}</span></a></li>
                                 @endforeach
                             </ul>
                         </div>
@@ -87,7 +88,7 @@
                                     <div role="tabpanel" class="tab-pane {{ $index==0?"active":'' }}" id="{{ str_replace(' ', '_', $category->title) }}">
                                         <table class="table table-bordered" style="background: #fff; box-shadow: 2px 2px 2px #ccc;">
                                             <thead>
-                                            <tr><th>Name</th><th width="20%">Price</th><th width="9%">Add?</th></tr>
+                                            <tr><th>Name</th><th width="30%">Price</th><th width="9%">Add?</th></tr>
                                             </thead>
                                             <tbody>
                                             @foreach($category->products as $product)
@@ -126,7 +127,7 @@
                     <div class="col-xs-12 hide" id="promocode_box" style="margin-bottom: 15px;">
                         <div class="input-group">
                             <input onkeyup="$(this).val($(this).val().toUpperCase());" type="text" name="promocode" id="promocode" class="form-control" placeholder="Enter Promocode Here.">
-                        <span class="input-group-btn">
+                            <span class="input-group-btn">
                             <button class="btn btn-default" onclick="check_coupon()" type="button">Apply!</button>
                         </span>
                         </div>
@@ -163,8 +164,9 @@
 @endsection
 
 @section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.7/js/bootstrap-dialog.min.js"></script>
     <script>
-        var coupon, c_applied, dis = 0, cart = [], gtotal= 0, quantity = 0, min_order = parseFloat('{{ $type=='delivery'?$restaurant->min_delivery_amt:0 }}'), delivery_fee = parseFloat('{{ $restaurant->delivery_fee }}'), packing_fee = parseFloat('{{ $restaurant->packing_fee }}');
+        var coupon, c_applied, dis = 0, cart = [], amt_wo_dpf = 0, gtotal= 0, quantity = 0, min_order = parseFloat('{{ $type=='delivery'?$restaurant->min_delivery_amt:0 }}'), delivery_fee = parseFloat('{{ $restaurant->delivery_fee }}'), packing_fee = parseFloat('{{ $restaurant->packing_fee }}');
 
         $(document).ready(function (){
             if(window.localStorage.getItem('cart') != null && window.localStorage.getItem('cart') != '') {
@@ -198,12 +200,18 @@
 
         function check_coupon()
         {
+            a = BootstrapDialog.show({
+                title: 'Notification!',
+                message: '<i class="fa fa-2x fa-spin fa-spinner spin"></i> Checking & Applying Coupon...',
+                type: BootstrapDialog.TYPE_PRIMARY,
+            });
             var code = $("#promocode").val();
             $.ajax({
                 url : "{{ route('coupon.check') }}",
                 type: "POST",
-                data: {"_token":"{{ csrf_token() }}", 'code': code, 'gtotal': gtotal}
+                data: {"_token":"{{ csrf_token() }}", 'code': code, 'gtotal': amt_wo_dpf}
             }).done(function (e){
+                a.close();
                 if(e['status'] == 'ok') {
                     $("#promocode").val('');
                     $("#check_error").html("");
@@ -245,6 +253,8 @@
                 $('#promocode_box')[0].classList.remove('hide');
             }else {
                 $('#promocode_box')[0].classList.add('hide');
+                $("#promocode").val('');
+                $("#check_error").html('');
             }
             coupon = null;
             update_cart();
@@ -297,7 +307,7 @@
             {
                 if(gtotal >= parseFloat(coupon['min_amt'])) {
                     $("#promocode_box").addClass('hide');
-                    dis = parseFloat(gtotal*(parseFloat(coupon['percent'])/100)).toFixed(1);
+                    dis = parseFloat(gtotal*(parseFloat(coupon['percent'])/100)).toFixed(0);
                     dis = (dis>=parseFloat(coupon['max_amount']))?parseFloat(coupon['max_amount']):dis;
                     if(c==1 && coupon['return_type'] == 'discount'){
                         gtotal -= dis;
@@ -306,12 +316,21 @@
                     }else if(c==2 && coupon['return_type'] == 'cashback')
                     {
 //                        c_applied = true;
-                        return '<tr class="text-warning"><td colspan="3">Voila ('+coupon['code']+') has been applied. Cashback of '+dis+' coins will be added in your wallet within 24hrs.</td></tr>';
+                        return '<tr class="text-warning"><td colspan="3">Voila ('+coupon['code']+') has been applied. Cashback of '+dis+' will be credited in your wallet within 24hrs.</td></tr>';
                     }
+                    a = BootstrapDialog.show({
+                        title: 'Notification!',
+                        message: '<i class="fa fa-2x fa-check"></i> Coupon applied',
+                        type: BootstrapDialog.TYPE_SUCCESS, // <-- Default value is BootstrapDialog.TYPE_PRIMARY
+                        closable: true,
+                    });
+                    setTimeout(function (){
+                        a.close();
+                    }, 1500);
                 }else{
 //                    c_applied = false;
                     document.getElementById('myonoffswitch').checked = false;
-                    $("#check_error").html("Min. Cart Amount should be "+coupon['min_amt']);
+                    $("#check_error").html("Min. Sub Total should be "+coupon['min_amt']);
                     check_switch();
                 }
             }else if((gtotal == 0 && coupon != null)){
@@ -325,7 +344,7 @@
         function update_cart()
         {
             var html='', footer='';
-            quantity = gtotal = 0;
+            quantity = gtotal = amt_wo_dpf = 0;
             for(var i=0;i<cart.length;i++)
             {
                 html        += '<tr onmouseout="show_remove_btn(this, \'out\')" onmouseover="show_remove_btn(this, \'over\')"><td>'+'<button class="hide btn btn-xs btn-danger pull-right" onclick="removefromcart('+i+')"><i class="fa fa-trash"></i></button> '+cart[i]['title']+'</td><td width="20%"><input type="number" value="'+cart[i]['quantity']+'" style="width:50px" min="1" max="49" onchange="this.value = update_item('+i+', this.value)" /></td><td>Rs. '+parseFloat(cart[i]['quantity']*cart[i]['price'])+'</td></tr>';
@@ -334,22 +353,43 @@
                 quantity    += cart[i]['quantity'];
             }
 
+            amt_wo_dpf = gtotal; // For Coupon applying
+
             footer += apply_coupon(1);
 
+            @if($type == 'delivery')
+                if(min_order > (gtotal+dis)){
+                    $("#min_order_text").html("<span class=\"text-danger\">You are Rs. "+parseFloat(min_order-gtotal).toFixed(1)+" away from minimum order.</span>");
+                    if(! $("#promo_row").hasClass('hide')) {
+                        $("#promo_row").addClass('hide');
+                    }
+                }else{
+                    $("#min_order_text").html("<span class=\"text-success\">Yeah Minimum Order Amount Reached</span>");
+                    if($("#promo_row").hasClass('hide')) $("#promo_row").removeClass('hide');
+                }
+            @endif
+
             if(gtotal > 0) {
-//                if(delivery_fee > 0) {
-//                    footer += '<tr><td colspan="2">Delivery Fee</td><td>+ Rs. '+delivery_fee+'</td></tr>';
-//                    gtotal += delivery_fee;
-//                }else{
-//                    footer += '<tr class="text-warning"><td colspan="2">Delivery Fee</td><td>FREE</td></tr>';
-//                }
-//                if(packing_fee > 0) {
-//                    footer += '<tr><td colspan="2">Packing Fee</td><td>+ Rs. '+packing_fee+'</td></tr>';
-//                    gtotal += packing_fee;
-//                }else{
-//                    footer += '<tr class="text-warning"><td colspan="2">Packing Fee</td><td>FREE</td></tr>';
-//                }
-                footer += '<tr><td>Total</td><td>'+quantity+'</td><td>Rs. '+gtotal+'</td></tr>';
+                footer += '<tr><td>Sub Total</td><td>'+quantity+'</td><td>Rs. '+amt_wo_dpf+'</td></tr>';
+
+                if($('#type').val() != 'dinein')
+                {
+                    if($('#type').val() == 'delivery'){
+                        if(delivery_fee > 0) {
+                            footer += '<tr><td colspan="2">Delivery Fee</td><td>+ Rs. '+delivery_fee+'</td></tr>';
+                            gtotal += delivery_fee;
+                        }else{
+                            footer += '<tr class="text-warning"><td colspan="2">Delivery Fee</td><td>FREE</td></tr>';
+                        }
+                    }
+                    if(packing_fee > 0) {
+                        footer += '<tr><td colspan="2">Packing Fee</td><td>+ Rs. '+packing_fee+'</td></tr>';
+                        gtotal += packing_fee;
+                    }else{
+                        footer += '<tr class="text-warning"><td colspan="2">Packing Fee</td><td>FREE</td></tr>';
+                    }
+                }
+                footer += '<tr class="text-primary"><td colspan="2">Amount Payable</td><td>Rs. '+gtotal+'</td></tr>';
                 if($("#promo_row").hasClass('hide')) {
                     //$("#checkout_btn").removeClass('hide');
                     $("#promo_row").removeClass('hide');
@@ -365,20 +405,8 @@
 
 //            if(! c_applied) {
 //                console.log('not applied');
-                footer += apply_coupon(2);
+            footer += apply_coupon(2);
 //            }
-
-            @if($type == 'delivery')
-                if(min_order > (gtotal+dis)){
-                    $("#min_order_text").html("<span class=\"text-danger\">You are Rs. "+parseFloat(min_order-gtotal).toFixed(1)+" away from minimum order.</span>");
-                    if(! $("#promo_row").hasClass('hide')) {
-                        $("#promo_row").addClass('hide');
-                    }
-                }else{
-                    $("#min_order_text").html("<span class=\"text-success\">Yeah Minimum Order Amount Reached</span>");
-                    if($("#promo_row").hasClass('hide')) $("#promo_row").removeClass('hide');
-                }
-            @endif
 
             $("#cart_body").html(html);
             $("#cart_footer").html(footer);

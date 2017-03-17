@@ -41,17 +41,7 @@
             <div class="form-group">
                 <label class="col-md-4 control-label" for="city">City</label>
                 <div class="col-md-6">
-                    <input id="city" name="city" type="text" value="{{ old('city')?:Auth::user()->city }}" class="form-control input-md" required="">
-
-                </div>
-            </div>
-
-            <!-- Text input-->
-            <div class="form-group">
-                <label class="col-md-4 control-label" for="pincode">Pincode</label>
-                <div class="col-md-6">
-                    <input id="pincode" name="pincode" type="text" value="{{ old('pincode')?:Auth::user()->pincode }}" class="form-control input-md" required="">
-
+                    <input readonly id="city" name="city" type="text" value="{{ old('city')?:\App\City::find(Auth::user()->city)->name }}" class="form-control input-md">
                 </div>
             </div>
 

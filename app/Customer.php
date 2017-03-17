@@ -16,4 +16,9 @@ class Customer extends Authenticatable
     {
         return $this->hasMany('App\Order', 'user_id');
     }
+
+    public function transactions()
+    {
+        return $this->hasMany('App\wallet', 'user_id');
+    }
 }

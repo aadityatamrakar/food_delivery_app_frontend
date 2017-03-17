@@ -18,16 +18,12 @@ class CustomerController extends Controller
         $this->validate($request,[
             "name"  =>  "required",
             "email" =>  "email",
-            "city"  =>  "required",
-            "pincode"   =>  "required|numeric|digits:6",
             "address"   =>  "required",
         ]);
 
         $customer = Customer::where('mobile', Auth::user()->mobile)->first();
         $customer->name = $request->name;
         $customer->email = $request->email;
-        $customer->city = $request->city;
-        $customer->pincode = $request->pincode;
         $customer->address = $request->address;
         $customer->save();
 
