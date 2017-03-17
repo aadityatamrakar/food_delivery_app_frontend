@@ -5,10 +5,10 @@
   <div class="container-fluid brand_nav_bar">
     <div class="container">
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-xs-2">
           <h1 style="line-height: 25px; margin: 0px; padding: 15px 0px;"><a style="text-decoration: none; color:white; font-weight: bold;" href="{{ route('home') }}">TromBoy</a></h1>
         </div>
-        <div class="col-md-9 hidden-xs" style="padding: 5px 0px;">
+        <div class="col-xs-10 hidden-xs" style="padding: 5px 0px;">
           @yield('header_right')
         </div>
       </div>

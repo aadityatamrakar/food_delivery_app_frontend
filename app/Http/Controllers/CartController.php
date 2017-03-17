@@ -14,6 +14,7 @@ use App\otp;
 use App\Product;
 use App\Restaurant;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Razorpay\Api\Api;
 
 class CartController extends Controller
@@ -61,7 +62,7 @@ class CartController extends Controller
         $mobile = urlencode(Auth::user()->mobile);
         $otp = rand(10000, 99999);
         $message = urlencode("OTP: $otp , Kindly use this for Order Confirmation. TromBoy.com");
-        //$res = file_get_contents("http://sms.hostingfever.in/sendSMS?username=spantech&message=$message&sendername=ONLINE&smstype=TRANS&numbers=$mobile&apikey=4d360261-78da-4d98-826c-d02a6771545c");
+        $this->SendSMS($mobile, $message);
         otp::create(['mobile'=>$mobile,'otp'=>$otp, 'res'=>'1']);
         header('otp: '.$otp);
 
@@ -70,7 +71,6 @@ class CartController extends Controller
 
     public function checkout_confirm(Request $request)
     {
-
         $type = $request->type;
         $mobile = Auth::user()->mobile;
 //        $otp = otp::where('mobile', $mobile)->orderBy('created_at', 'desc')->first()->otp;
@@ -137,16 +137,22 @@ class CartController extends Controller
 
         $api = new ApiController();
         $customer = Auth::user();
-        $restaurant_message = "NEW:".$order->id.", Name:".substr($customer->name, strpos($customer->name, ' '))."(".$customer->mobile."), ".$order->address.", Cart: [";
-        for($i=0; $i<count($cart); $i++)
-            $restaurant_message .= $cart[$i]['title'].'-'.$cart[$i]['quantity'].', ';
-        $restaurant_message .= "] Amt: ".$gtotal.". To confirm order send '68J8D conf ".$order->id."' to 9220592205 or ".$api->confirm_order_link($order->id);
 
         /*
          * Notify Restaurant
          */
+        $confirm_link = $api->confirm_order_link($order->id);
+        $restaurant_message = "NEW:".$order->id.", Name:".substr($customer->name, strpos($customer->name, ' '))."(".$customer->mobile."), ".$order->address.", Cart: [";
+        for($i=0; $i<count($cart); $i++)
+            $restaurant_message .= $cart[$i]['title'].'-'.$cart[$i]['quantity'].', ';
+        $restaurant_message .= "] Amt: ".$gtotal.". To confirm order send '68J8D conf ".$order->id."' to 9220592205 or ".$confirm_link;
         $this->SendSMS($restaurant->contact_no, $restaurant_message);
-        $this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
+        // $this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
+        $api = new ApiController();
+        //$this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
+        Mail::send('emails.restaurant.new_order', ['order' => $order, 'confirm_link'=>$confirm_link, 'cart'=>$cart], function ($m) use ($order) {
+            $m->to($order->restaurant->email, $order->restaurant->name)->subject("New Order Details");
+        });
 
         if($request->payment_id != 'wallet'){
             $wallet_amt = $request->wallet_amt;
@@ -192,7 +198,7 @@ class CartController extends Controller
                 "type"      =>  "cashback_recieved",
                 'capture'   =>  "success",
                 'mode'      =>  "system",
-                'amount'    =>  $cashback,
+                'amount'    =>  round($cashback, 0),
                 'order_id'  =>  $order->id,
                 'user_id'   =>  Auth::user()->id,
                 'restaurant_id'=> $request->restaurant_id,
@@ -201,6 +207,6 @@ class CartController extends Controller
 
         //$user_message = urlencode("Dear ".Auth::user()->name.", Your Order has been recieved, Order No: ".$order->id.". TromBoy.com");
 
-        return view('cart.confirm', compact('order'));
+        return redirect()->route('order.view', ['id'=>$order->id])->with(['orderplaced'=>'success']);
     }
 }

@@ -2,9 +2,14 @@
     font-size: 25px;
 }
 
+.mylist{
+    padding: 0;
+    margin-bottom: 3px;
+}
+
 .mylist li{
     display: inline-block;
-    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .brand_nav_bar{

@@ -7,6 +7,10 @@ use App\City;
 use App\Coupon;
 use App\Customer;
 use App\wallet;
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Request;
 use App\Order;
 use App\otp;
@@ -16,6 +20,7 @@ use App\User;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Razorpay\Api\Api;
 
 class ApiController extends Controller
 {
@@ -47,7 +52,7 @@ class ApiController extends Controller
         $mobile = urlencode($request['mobile']);
         $otp = rand(100000, 999999);
         $message = urlencode("Verification Code: $otp , TromBoy.com");
-        $res = file_get_contents("http://sms.hostingfever.in/sendSMS?username=spantech&message=$message&sendername=ONLINE&smstype=TRANS&numbers=$mobile&apikey=4d360261-78da-4d98-826c-d02a6771545c");
+        $res = $this->SendSMS($mobile, $message);
         otp::create(['mobile'=>$request['mobile'],'otp'=>$otp, 'res'=>'1']);
         //header("X-xotp: $otp");
 
@@ -235,6 +240,9 @@ class ApiController extends Controller
         $c = new CouponController();
         $restaurant = Restaurant::where('id', $request['restaurant_id'])->first();
         $cart = $request['cart'];
+        $payment_id = $request['payment_id'];
+        $payment_amount = $request['payment_amount'];
+        $wallet_amount = $request['wallet_amount'];
         $packing_fee = $type!='dinein'?$restaurant->packing_fee:0;
         $delivery_fee = $type=='delivery'?$restaurant->delivery_fee:0;
         $coupon_applied = $request['coupon']!=null?true:false;
@@ -282,25 +290,66 @@ class ApiController extends Controller
             "status"        =>  "WFRA",
         ]);
 
+        if($payment_id != 'wallet')
+        {
+            $api = new Api('rzp_test_FMKzS7xs08EwP5', 'MtWbDKF84Ak4DqrD6tcuaBHw');
+            $payment = $api->payment->fetch($payment_id);
+            $payment->capture(array('amount' => ($payment_amount)*100));
+
+            wallet::create([
+                "type"      =>  "added",
+                'capture'   =>  "success",
+                'mode'      =>  $payment->method.' - '.($payment->wallet),
+                'amount'    =>  $payment_amount,
+                'order_id'  =>  $order->id,
+                'user_id'   =>  $customer->id,
+                'restaurant_id'=> $restaurant->id,
+            ]);
+
+            wallet::create([
+                "type"      =>  "paid_for_order",
+                'capture'   =>  "success",
+                'mode'      =>  "wallet",
+                'amount'    =>  $gtotal,
+                'order_id'  =>  $order->id,
+                'user_id'   =>  $customer->id,
+                'restaurant_id'=> $restaurant->id,
+            ]);
+        }else{
+            wallet::create([
+                "type"      =>  "paid_for_order",
+                'capture'   =>  "success",
+                'mode'      =>  "wallet",
+                'amount'    =>  $gtotal,
+                'order_id'  =>  $order->id,
+                'user_id'   =>  $customer->id,
+                'restaurant_id'=> $restaurant->id,
+            ]);
+        }
+
         if($cashback > 0)
         {
             wallet::create([
                 "type"      =>  "cashback_recieved",
                 'capture'   =>  "success",
                 'mode'      =>  "system",
-                'amount'    =>  $cashback,
+                'amount'    =>  round($cashback, 0),
                 'order_id'  =>  $order->id,
-                'user_id'   =>  Auth::user()->id,
-                'restaurant_id'=> $request->restaurant_id,
+                'user_id'   =>  $customer->id,
+                'restaurant_id'=> $restaurant->id,
             ]);
         }
 
+        $confirm_link = $this->confirm_order_link($order->id);
         $restaurant_message = "NEW:".$order->id.", Name:".substr($customer->name, strpos($customer->name, ' '))."(".$customer->mobile."), ".$order->address.", Cart: [";
         for($i=0; $i<count($cart); $i++)
             $restaurant_message .= $cart[$i]['title'].'-'.$cart[$i]['quantity'].', ';
-        //$restaurant_message .= "] Amt: ".$gtotal.". To confirm order send '68J8D conf ".$order->id."' to 9220592205 or ".$this->confirm_order_link($order->id);
-        //$this->SendSMS($restaurant->contact_no, $restaurant_message);
-        $this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
+        $restaurant_message .= "] Amt: ".$gtotal.". To confirm order send '68J8D conf ".$order->id."' to 9220592205 or ".$confirm_link;
+        $this->SendSMS($restaurant->contact_no, $restaurant_message);
+        //$this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
+        Mail::send('emails.restaurant.new_order', ['order' => $order, 'confirm_link'=>$confirm_link, 'cart'=>$cart], function ($m) use ($order) {
+            $m->to($order->restaurant->email, $order->restaurant->name)->subject("New Order Details");
+        });
         return $order;
     }
     public function order_status($id)
@@ -308,23 +357,34 @@ class ApiController extends Controller
         $order = Order::find($id);
         return ['status'=>$order->status];
     }
+    public function all_orders()
+    {
+        $request = $this->get_parameters();
+        $customer = Customer::where('mobile', $request['mobile'])->first();
+        foreach($customer->orders as $index=>$order)
+        {
+            $customer->orders[$index]['restaurant'] = Collection::make($order->restaurant)->only(['name', 'logo']);
+        }
+        return $customer->orders;
+    }
+    public function wallet_summary()
+    {
+        $request = $this->get_parameters();
+        $customer = Customer::where('mobile', $request['mobile'])->first();
+        $bal = WalletController::balance($customer);
+        $transaction = Collection::make($customer->transactions);
+        return compact(['transaction', 'bal']);
+    }
+    public function wallet_balance()
+    {
+        $request = $this->get_parameters();
+        $customer = Customer::where('mobile', $request['mobile'])->first();
+        $bal = WalletController::balance($customer);
+        return $bal;
+    }
     public function test()
     {
-        $api = new \CALLR\API\Client();
-        $api->setAuthCredentials('spantechnologies_1', 'wVAZcLFbFZ');
-        $target = new \stdClass();
-        $target->number = '+918989946073';
-        $target->timeout = 30;
 
-        $messages = [131, 132, 'TTS|TTS_EN-GB_SERENA|Hello world! how are you ? Tromboy.'];
-
-        $options = new \stdClass();
-        $options->cdr_field = 'userData';
-        $options->cli = 'BLOCKED';
-        $options->loop = 2;
-
-        $result = $api->call('calls.broadcast_1', [$target, $messages, $options]);
-        return $result;
     }
     public function confirm_order_link($id)
     {
@@ -375,12 +435,24 @@ class ApiController extends Controller
                 }else{
                     $message = "Hi, Your food will be ready in approx ".$order->restaurant->dinein_time .' mins. To follow up on your order '.$order->id.', call the restaurant directly at '.$order->restaurant->contact_no.' / '.$order->restaurant->contact_no_2;
                 }
-                //$this->SendSMS($order->restaurant->contact_no, $message);
-                ////$this->SendSMS($order->user->mobile, $message);
-                return $message = "You have just confirmed the order ID:".$id.'. Please Try to fullfil the order on time. TromBoy!';
+                $this->SendSMS($order->user->mobile, $message);
+                Mail::send('emails.order_details', ['order' => $order], function ($m) use ($order) {
+                    $m->to($order->user->email, $order->user->name)->subject("Your Order Details");
+                });
+                $message = "You have just confirmed the order ID:".$id.'. Please Try to fullfil the order on time. TromBoy!';
+                $this->SendSMS($restaurant->contact_no, $message);
+                return $message;
             }else{
                 return 'Order '.$id.' has already been confirmed.';
             }
         }
+    }
+    public function regen_pin()
+    {
+        $request = $this->get_parameters();
+        $customer = Customer::where('mobile', $request['mobile'])->first();
+        if($customer == null) return ['status'=>'error', 'error'=>"Mobile no. not registered."];
+        $this->SendSMS($customer->mobile, 'Use PIN: '.$customer->pin.' to Login, You can change your PIN from profile section in the app. TromBoy');
+        return ['status'=>"sent"];
     }
 }

@@ -173,7 +173,7 @@
                 window.location.href = '/';
             }
         })
-        var html='', gtotal=0, gqty= 0, cart = JSON.parse('{!! $cart_data !!}'), coupon = JSON.parse('{!! $coupon_data !!}'), delivery_fee=parseFloat('{{ \App\Restaurant::where('id', Request::get('restaurant_id'))->first()->delivery_fee }}'), packing_fee=parseFloat('{{ \App\Restaurant::where('id', Request::get('restaurant_id'))->first()->packing_fee }}'), type='{{ Request::get('type') }}', wallet_amt = 0;
+        var html='', gtotal=0, sub_total=0, gqty= 0, cart = JSON.parse('{!! $cart_data !!}'), coupon = JSON.parse('{!! $coupon_data !!}'), delivery_fee=parseFloat('{{ \App\Restaurant::where('id', Request::get('restaurant_id'))->first()->delivery_fee }}'), packing_fee=parseFloat('{{ \App\Restaurant::where('id', Request::get('restaurant_id'))->first()->packing_fee }}'), type='{{ Request::get('type') }}', wallet_amt = 0;
         function save_confirm()
         {
             $("#block_back").val('block');
@@ -234,10 +234,11 @@
         function apply_coupon(c)
         {
             if(coupon != null && coupon['status'] == 'ok'){
-                dis = parseFloat(gtotal*(parseFloat(coupon['percent'])/100)).toFixed(1);
+                dis = parseFloat(sub_total*(parseFloat(coupon['percent'])/100)).toFixed(1);
                 dis = (dis>=parseFloat(coupon['max_amount']))?coupon['max_amount']:dis;
+                dis = dis.toFixed(0);
                 if(c==1 && coupon['return_type'] == 'discount'){
-                    gtotal -= dis;
+                    sub_total -= dis;
                     return '<tr class="text-warning"><td colspan="2">Discount ('+coupon['code']+')</td><td>- Rs. '+dis+'</td></tr>';
                 }else if(c==2 && coupon['return_type'] == 'cashback'){
                     return '<tr class="text-warning"><td colspan="3">Voila ('+coupon['code']+') has been applied. Cashback of '+dis+' will be credited in your wallet within 24hrs.</td></tr>';
@@ -252,13 +253,13 @@
 
         function update_cart()
         {
-            html = '', gtotal=0, gqty= 0, wallet_amt = $("#wallet_amt").val();
+            html = '', gtotal=0, gqty= 0, wallet_amt = $("#wallet_amt").val(), sub_total=0;
             $.each(cart, function (i, v){
                 html += '<tr>'+'<td>'+ v['title']+'</td>'+'<td>'+ v['quantity']+'</td>'+'<td>'+ parseFloat(v['quantity']*v['price'])+'</td>'+'</tr>';
                 gtotal += parseFloat(v['quantity']*v['price']);
                 gqty += parseFloat(v['quantity']);
             });
-            html += "<tr><td>Sub Total</td><td>"+gqty+"</td><td>Rs. "+gtotal+"</td></tr>";
+            html += "<tr><td>Sub Total</td><td>"+gqty+"</td><td>Rs. "+(sub_total=gtotal)+"</td></tr>";
 
             html += apply_coupon(1);
 

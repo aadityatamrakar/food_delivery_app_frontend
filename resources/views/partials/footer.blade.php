@@ -8,7 +8,7 @@
         margin-left: 5px;
     }
     footer ul li a{
-         color: #cecece;
+        color: #cecece;
     }
     footer ul{
         list-style-type: circle;
@@ -20,10 +20,116 @@
     .footer-title{
 
     }
+    .app_bg{
+        background: #abbaab; /* fallback for old browsers */
+        background: -webkit-linear-gradient(to left, #abbaab , #ffffff); /* Chrome 10-25, Safari 5.1-6 */
+        background: linear-gradient(to left, #abbaab , #ffffff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    }
+    .blood_red_gradient{
+        color: #f85032; /* fallback for old browsers */
+        color: -webkit-linear-gradient(to left, #f85032 , #e73827); /* Chrome 10-25, Safari 5.1-6 */
+        color: linear-gradient(to left, #f85032 , #e73827); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    }
 </style>
-<footer class="container-fluid" style="margin-top: 20px; border-top: 1px solid #ddd; padding: 20px 0px;">
+
+<div class="container-fluid app_bg" style="margin-top: 20px; padding: 20px 0px;">
+    <div class="container">
+        <h2 class="text-center" style="color:#5e5e5e; font-weight: bold; font-size: 40px;">How it Works!</h2>
+        <br>
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2">
+                <center>
+                    <div class="col-md-3">
+                        <i class="fa fa-map-marker fa-5x blood_red_gradient"></i><br>
+                        <h3>Location</h3>
+                        <p>Enter your location so that we can show you which restaurants deliver to you.</p>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="fa fa-cutlery fa-5x blood_red_gradient"></i><br>
+                        <h3>Order</h3>
+                        <p>Pick a restaurant and select items you’d like to order. You can search by restaurant and order.</p>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="fa fa-inr fa-5x blood_red_gradient"></i><br>
+                        <h3>Payment</h3>
+                        <p> Pay fast & secure online or on delivery!</p>
+                    </div>
+                    <div class="col-md-3">
+                        <i class="fa fa-smile-o fa-5x blood_red_gradient"></i><br>
+                        <h3>Enjoy</h3>
+                        <p> Enjoy the food and rate us on Playstore/Appstore</p>
+                    </div>
+                </center>
+            </div>
+        </div>
+        <center>
+            <h3>Message Gateway by MSG91!</h3>
+            <a href="https://msg91.com/startups/?utm_source=startup-banner"><img src="https://msg91.com/images/startups/msg91Badge.png" width="120" height="90" title="MSG91 - SMS for Startups" alt="Bulk SMS - MSG91"></a>
+        </center>
+    </div>
+</div>
+<div class="container-fluid app_bg" style="padding: 20px 0px;">
     <div class="container">
         <div class="row">
+            <div class="col-md-6 text-right">
+                <center><img height="300px" src="/img/phone.png" /></center>
+            </div>
+            <div class="col-md-6">
+                <h3>Looking for the Food Feed ? Get the app!</h3>
+                <p class="text-mute">Follow foodies to see their. this is some text. </p>
+                <br/>
+                <p class="text-mute">We'll send you a link, Click on it to download the app.</p>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Enter your Email address.">
+                            <span class="input-group-btn">
+                                <button class="btn btn-warning" type="button">Send Email!</button>
+                            </span>
+                        </div><!-- /input-group -->
+                        <hr/>
+                        <div class="input-group">
+                            <span class="input-group-addon" id="sizing-addon1">+91</span><input type="text" class="form-control" placeholder="Enter your Mobile number.">
+                            <span class="input-group-btn">
+                        <button class="btn btn-warning" type="button">Send SMS!</button>
+                    </span>
+                        </div><!-- /input-group -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="container-fluid" style=" border-top: 1px solid #ddd; padding: 20px 0px;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1 style="color: white;">Subscribe to our newsletter</h1>
+                <form action="//Tromboy.us15.list-manage.com/subscribe/post?u=2b73e95cbe79f03d5079d62b3&amp;id=cbe7f66a37" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <input type="email" name="EMAIL" class="form-control" placeholder="Email Address" required>
+                            <input type="hidden" name="b_2b73e95cbe79f03d5079d62b3_cbe7f66a37" tabindex="-1" value="">
+                        </div>
+                        <div class="col-xs-6">
+                            <input type="submit" value="Subscribe" name="subscribe" class="btn btn-primary">
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="col-md-6 text-right pull-right">
+                <h4 style="color: white;">Restaurant Owner ?</h4>
+                <p>Join the TromBoy network <br/>and increase your sales</p>
+                <a href="https://goo.gl/forms/TwN7ORb5G1qxZRIA2" target="_blank" class="btn btn-primary">Submit Request</a>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="row">
+
             <div class="col-xs-12 social-icons" style="font-size: 24px;">
                 <center>
                     <p>Find us on</p>
@@ -40,10 +146,10 @@
             <div class="col-xs-12 social-icons" style="font-size: 16px;">
                 <center>
                     <ul>
-                        <li><a href="#">About Us</a></li> |
-                        <li><a href="#">Partner with Us</a></li> |
-                        <li><a href="#">Help & Support</a></li> |
-                        <li><a href="#">Refunds & Cancellation Policy</a></li> |
+                        <li><a target="_blank" href="https://goo.gl/forms/TwN7ORb5G1qxZRIA2">Partner with Us</a></li> |
+                        <li><a href="{{ route('helpsupport') }}">Help & Support</a></li> |
+                        <li><a href="{{ route('refundcancel') }}">Refunds & Cancellation Policy</a></li> |
+                        <li><a href="{{ route('privacypolicy') }}">Privacy Policy</a></li> |
                         <li><a href="#">Terms & Condition</a></li>
                     </ul>
                 </center>

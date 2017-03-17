@@ -6,7 +6,7 @@
         {
             padding: 0;
             margin: 0;
-            background: url('https://images.pexels.com/photos/5928/salad-healthy-diet-spinach.jpg?w=940&h=650&auto=compress&cs=tinysrgb') fixed;
+            background: url('https://images.pexels.com/photos/5928/salad-healthy-diet-spinach.jpg?w=940&h=650&auto=compress&cs=tinysrgb');
             background-size: cover;
             background-position: center;
             padding-top: 160px;
@@ -201,6 +201,10 @@
     </style>
 @endsection
 
+@section('header_right')
+    <a class="pull-right" href="https://msg91.com/startups/?utm_source=startup-banner"><img src="https://msg91.com/images/startups/msg91Badge.png" width="80" height="60" title="MSG91 - SMS for Startups" alt="Bulk SMS - MSG91"></a>
+@endsection
+
 @section('content')
     <div class="container" >
         {{--@include('partials.notify')--}}
@@ -227,7 +231,7 @@
                                 </div>
                                 <input id="area_id" name="area_id" type="hidden" />
                                 {!! csrf_field() !!}
-                                <div class="row text-primary" style="padding: 5px 10px; font-size: 16px;">
+                                <div class="row text-primary text-left" style="padding: 5px 10px; font-size: 16px;">
                                     <div class="col-sm-4">
                                         <input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>
                                     </div>
@@ -240,14 +244,13 @@
                                 </div>
                                 <input type="submit" value="Show Restaurants" id="sub_btn" class="btn myBtnClr btn-sm" />
                             </form>
-                            <p style="margin: 0;">Currently, We are live in Indore.</p>
+                            <p style="margin: 0;">Currently, We are live in Satna.</p>
                         </div>
                     </center>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('script')

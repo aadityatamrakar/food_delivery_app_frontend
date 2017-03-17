@@ -9,7 +9,7 @@
 @endsection
 
 @section('header')
-    <div class="container" style="margin-top: 100px;">
+    <div class="container" style="margin-top: 80px;">
         <div class="row">
             <div class="col-md-9">
                 <div class="carousel slide" id="carousel-example-generic" data-interval="1000" data-ride="carousel" style="border: 1px solid #000;">

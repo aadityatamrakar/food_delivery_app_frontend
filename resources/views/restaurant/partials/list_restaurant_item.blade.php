@@ -13,7 +13,7 @@
             <center><hr width="90%" style="margin: 8px 0px; border-color: #ccc;"></center>
             <div class="row" style=" font-weight: bold;">
                 <div class="col-xs-2" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="Food Type: {{ $restaurant->type }}">
-                    <img src="/public/img/{!! $restaurant->type == 'Pure Veg'?'veg':'nveg' !!}.jpg" width="16px" height="16px"/>
+                    <img src="/img/{!! $restaurant->type == 'Pure Veg'?'veg':'nveg' !!}.jpg" width="16px" height="16px"/>
                 </div>
                 @if($link)
                     <div class="col-xs-{{ $type=='dinein'?10:4 }} text-primary" data-toggle="popover" data-placement="top" data-trigger="hover" data-content="@if($type == 'delivery') {{ 'Delivers in '.$restaurant->delivery_time }} @elseif($type == 'pickup') {{ 'Pickup in '.$restaurant->pickup_time }} @elseif($type == 'dinein') {{ 'Dine in time '.$restaurant->dinein_time }} @endif Minutes">

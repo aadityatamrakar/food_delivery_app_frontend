@@ -15,9 +15,17 @@
         <div class="input-group">
             <input type="text" class="form-control my-control" autocomplete="off" placeholder="Area" value="{{ $area->name }}" name="area" id="area">
             <input type="hidden" name="area_id" id="area_id" value="{{ $area->id }}" />
+            <input type="hidden" name="type" id="type" value="{{ $type  }}" />
             {!! csrf_field() !!}
             <div class="input-group-btn">
                 <button type="submit" class="btn btn-primary">Change</button>
+            </div>
+        </div>
+        <div class="input-group">
+            <input type="text" class="form-control my-control" autocomplete="off" placeholder="Restaurant Search" name="restaurant_search" id="restaurant_search">
+            {!! csrf_field() !!}
+            <div class="input-group-btn">
+                <button type="submit" class="btn btn-primary"><i class="glyphicon glyphicon-search"></i></button>
             </div>
         </div>
     </div>
@@ -50,6 +58,6 @@
                 });
             },
             autoSelect: true
-        })
+        });
     </script>
 @endsection

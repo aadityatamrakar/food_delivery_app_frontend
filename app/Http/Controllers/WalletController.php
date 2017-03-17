@@ -29,9 +29,10 @@ class WalletController extends Controller
         imagepng($im);
     }
 
-    public static function balance()
+    public static function balance($customer = null)
     {
-        $customer = Customer::find(Auth::user()->id);
+        if($customer == null)
+            $customer = Customer::find(Auth::user()->id);
 
         $total_added = $customer->transactions->where('type', 'added')->sum('amount');
         $total_cashback = $customer->transactions->where('type', 'cashback_recieved')->sum('amount');

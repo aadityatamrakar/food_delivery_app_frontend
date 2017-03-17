@@ -50,15 +50,36 @@
             right: 0px;
         }
         .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus{
-            background-color: orangered;
+            background-color: #158cba;
+        }
+        .navMenu.affix{
+            left: 90px;
+            top: 110px;
+            width: 195px;
+        }
+        .myCart.affix{
+            right: 90px;
+            top: 110px;
+            width: 390px;
+        }
+        .menuContent{
+            position: absolute;
+            top: 0px;
+            left: 180px;
+            width: 620px;
+            height: auto;
+        }
+
+        .myblue{
+            background: #2c3e50; /* fallback for old browsers */
+            background: -webkit-linear-gradient(to left, #2c3e50 , #3498db); /* Chrome 10-25, Safari 5.1-6 */
+            background: linear-gradient(to left, #2c3e50 , #3498db); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
         }
     </style>
 @endsection
-
 @section('header_right')
     @include('restaurant.header_right')
 @endsection
-
 @section('header')
     <div class="myheader" style="margin-top: 80px;">
         <center><img style="box-shadow: 2px 2px 2px rgba(0,0,0,0.7);" src="//admin.tromboy.com/images/restaurant/logo/{{ $restaurant->logo }}" width="100px" height="100px" /></center>
@@ -67,44 +88,41 @@
 @endsection
 
 @section('content')
-    <div class="row">
+    <div class="row" id="update_height" style="height: 500px;">
         <div class="col-md-8">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <div class="panel-title" style="text-transform: capitalize; font-weight: bold;">{{ $type }} Menu</div>
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <ul class="nav nav-pills nav-stacked" role="tablist" style="font-weight: bold;">
-                                @foreach($restaurant->categories as $index=>$category)
-                                    <li role="presentation" class="{{ $index==0?"active":'' }}"><a href="#{{ str_replace(' ', '_', $category->title) }}" aria-controls="{{ str_replace(' ', '_', $category->title) }}" role="tab" data-toggle="tab">{{ $category->title }} <span class="badge">{{ count($category->products) }}</span></a></li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        <div class="col-md-9">
-                            <div class="tab-content">
-                                @foreach($restaurant->categories as $index=>$category)
-                                    <div role="tabpanel" class="tab-pane {{ $index==0?"active":'' }}" id="{{ str_replace(' ', '_', $category->title) }}">
-                                        <table class="table table-bordered" style="background: #fff; box-shadow: 2px 2px 2px #ccc;">
-                                            <thead>
-                                            <tr><th>Name</th><th width="30%">Price</th><th width="9%">Add?</th></tr>
-                                            </thead>
-                                            <tbody>
-                                            @foreach($category->products as $product)
-                                                <tr><th style="text-transform: capitalize;">{{ $product->title }}</th><th>Rs. {!! $product->mrp>$product->price?'<span class="text-danger" style="text-decoration: line-through;">'.$product->mrp.'</span>':'' !!} {{ $product->price }}</th><th><center><button class="btn btn-xs btn-success" onclick="addtocart('{{ $product->id }}', '{{ $product->title }}', 1, '{{ $product->price }}')" ><i class="glyphicon-plus glyphicon"></i> </button></center></th></tr>
-                                            @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                @endforeach
+            <div class="row">
+                <nav class="col-md-3 navMenu" id="categoryNav" data-spy="affix" data-offset-top="220" data-offset-bottom="1270">
+                    <h3 style="text-transform: capitalize; font-weight: bold;padding: 5px 0px;margin: 0;">{{ $type }} Menu</h3>
+                    <ul class="nav nav-pills nav-stacked"  style="font-weight: bold;">
+                        @foreach($restaurant->categories as $index=>$category)
+                            @if(count($category->products) > 0)
+                                <li class="{{ $index==0?"active":'' }}"><a href="#" data-target="#{{ str_replace(' ', '_', $category->title) }}" aria-controls="{{ str_replace(' ', '_', $category->title) }}" data-toggle="scrollToContent">{{ $category->title }} <span class="badge">{{ count($category->products) }}</span></a></li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </nav>
+                <div class="col-md-9 menuContent">
+                    @foreach($restaurant->categories as $index=>$category)
+                        @if(count($category->products) > 0)
+                            <div id="{{ str_replace(' ', '_', $category->title) }}">
+                                <table class="table table-striped" style="background: #fff; box-shadow: 2px 2px 2px #ccc;">
+                                    <thead>
+                                    <tr class="myblue" style="color: white;"><th class="text-center" colspan="3">{{ $category->title }}</th></tr>
+                                    {{--<tr><th>Name</th><th width="30%">Price</th><th width="9%">Add?</th></tr>--}}
+                                    </thead>
+                                    <tbody>
+                                    @foreach($category->products as $product)
+                                        <tr><th style="text-transform: capitalize;">{{ $product->title }}</th><th width="30%">Rs. {!! $product->mrp>$product->price?'<span class="text-danger" style="text-decoration: line-through;">'.$product->mrp.'</span>':'' !!} {{ $product->price }}</th><th width="9%"><center><button class="btn btn-xs btn-success" onclick="addtocart('{{ $product->id }}', '{{ $product->title }}', 1, '{{ $product->price }}')" ><i class="glyphicon-plus glyphicon"></i> </button></center></th></tr>
+                                    @endforeach
+                                    </tbody>
+                                </table>
                             </div>
-                        </div>
-                    </div>
+                        @endif
+                    @endforeach
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 myCart" data-spy="affix" data-offset-top="200" data-offset-bottom="1250">
             <div class="panel panel-primary">
                 <div class="panel-heading">
                     <div class="panel-title text-center" style="font-weight: bold; font-size: 20px;">Cart</div>
@@ -168,7 +186,15 @@
     <script>
         var coupon, c_applied, dis = 0, cart = [], amt_wo_dpf = 0, gtotal= 0, quantity = 0, min_order = parseFloat('{{ $type=='delivery'?$restaurant->min_delivery_amt:0 }}'), delivery_fee = parseFloat('{{ $restaurant->delivery_fee }}'), packing_fee = parseFloat('{{ $restaurant->packing_fee }}');
 
+        $('[data-toggle="scrollToContent"]').click(function(e){
+            e.preventDefault();
+            var v = $($(this).data('target')).offset().top;
+            $("body").animate({scrollTop:(v-110)});
+        });
+
         $(document).ready(function (){
+            $('body').scrollspy({ target: '#categoryNav', offset: 140 });
+            $("#update_height")[0].style.height = (($(".menuContent")[0].scrollHeight)+50)+'px';
             if(window.localStorage.getItem('cart') != null && window.localStorage.getItem('cart') != '') {
                 cart = JSON.parse(window.localStorage.getItem('cart'));
                 check_cart();
@@ -303,14 +329,14 @@
 
         function apply_coupon(c)
         {
-            if(gtotal > 0 && coupon != null)
+            if(amt_wo_dpf > 0 && coupon != null)
             {
-                if(gtotal >= parseFloat(coupon['min_amt'])) {
+                if(amt_wo_dpf >= parseFloat(coupon['min_amt'])) {
                     $("#promocode_box").addClass('hide');
-                    dis = parseFloat(gtotal*(parseFloat(coupon['percent'])/100)).toFixed(0);
+                    dis = parseFloat(amt_wo_dpf*(parseFloat(coupon['percent'])/100)).toFixed(0);
                     dis = (dis>=parseFloat(coupon['max_amount']))?parseFloat(coupon['max_amount']):dis;
                     if(c==1 && coupon['return_type'] == 'discount'){
-                        gtotal -= dis;
+                        amt_wo_dpf -= dis;
 //                        c_applied = true;
                         return '<tr class="text-warning"><td colspan="2">Discount ('+coupon['code']+')</td><td>- Rs. '+dis+'</td></tr>';
                     }else if(c==2 && coupon['return_type'] == 'cashback')
@@ -333,7 +359,7 @@
                     $("#check_error").html("Min. Sub Total should be "+coupon['min_amt']);
                     check_switch();
                 }
-            }else if((gtotal == 0 && coupon != null)){
+            }else if((amt_wo_dpf == 0 && coupon != null)){
 //                c_applied = false;
                 document.getElementById('myonoffswitch').checked = false;
                 check_switch();
@@ -358,15 +384,15 @@
             footer += apply_coupon(1);
 
             @if($type == 'delivery')
-                if(min_order > (gtotal+dis)){
-                    $("#min_order_text").html("<span class=\"text-danger\">You are Rs. "+parseFloat(min_order-gtotal).toFixed(1)+" away from minimum order.</span>");
-                    if(! $("#promo_row").hasClass('hide')) {
-                        $("#promo_row").addClass('hide');
-                    }
-                }else{
-                    $("#min_order_text").html("<span class=\"text-success\">Yeah Minimum Order Amount Reached</span>");
-                    if($("#promo_row").hasClass('hide')) $("#promo_row").removeClass('hide');
+            if(min_order > (gtotal+dis)){
+                $("#min_order_text").html("<span class=\"text-danger\">You are Rs. "+parseFloat(min_order-gtotal).toFixed(1)+" away from minimum order.</span>");
+                if(! $("#promo_row").hasClass('hide')) {
+                    $("#promo_row").addClass('hide');
                 }
+            }else{
+                $("#min_order_text").html("<span class=\"text-success\">Yeah Minimum Order Amount Reached</span>");
+                if($("#promo_row").hasClass('hide')) $("#promo_row").removeClass('hide');
+            }
             @endif
 
             if(gtotal > 0) {
