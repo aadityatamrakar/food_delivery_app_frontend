@@ -8,7 +8,7 @@ class Order extends Model
 {
     protected $table = 'order';
 
-    protected $fillable = ['user_id', 'restaurant_id', 'address', 'city', 'gtotal', 'cart', 'status', 'deliver', 'payment_modes', 'coupon', 'delivery_fee', 'packing_fee'];
+    protected $fillable = ['user_id', 'restaurant_id', 'address', 'city', 'gtotal', 'cart', 'status', 'deliver', 'payment_modes', 'coupon', 'delivery_fee', 'packing_fee', 'remarks', 'mobile2', 'discount', 'cashback'];
 
     public function user()
     {

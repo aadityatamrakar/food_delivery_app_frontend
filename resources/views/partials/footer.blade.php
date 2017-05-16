@@ -82,16 +82,16 @@
                 <div class="row">
                     <div class="col-md-8">
                         <div class="input-group">
-                            <input type="email" class="form-control" placeholder="Enter your Email address.">
+                            <input type="email" class="form-control" placeholder="Enter your Email address." id="email" name="email">
                             <span class="input-group-btn">
-                                <button class="btn btn-warning" type="button">Send Email!</button>
+                                <button class="btn btn-warning" type="button" data-toggle="send_email_link">Send Email!</button>
                             </span>
                         </div><!-- /input-group -->
                         <hr/>
                         <div class="input-group">
-                            <span class="input-group-addon" id="sizing-addon1">+91</span><input type="text" class="form-control" placeholder="Enter your Mobile number.">
+                            <span class="input-group-addon" id="sizing-addon1">+91</span><input type="text" class="form-control" placeholder="Enter your Mobile number." id="mobile" name="mobile">
                             <span class="input-group-btn">
-                        <button class="btn btn-warning" type="button">Send SMS!</button>
+                        <button class="btn btn-warning" type="button" data-toggle="send_sms_link">Send SMS!</button>
                     </span>
                         </div><!-- /input-group -->
                     </div>
@@ -146,11 +146,13 @@
             <div class="col-xs-12 social-icons" style="font-size: 16px;">
                 <center>
                     <ul>
+                        <li><a href="{{ route('about') }}">About Us</a></li> |
                         <li><a target="_blank" href="https://goo.gl/forms/TwN7ORb5G1qxZRIA2">Partner with Us</a></li> |
                         <li><a href="{{ route('helpsupport') }}">Help & Support</a></li> |
                         <li><a href="{{ route('refundcancel') }}">Refunds & Cancellation Policy</a></li> |
                         <li><a href="{{ route('privacypolicy') }}">Privacy Policy</a></li> |
-                        <li><a href="#">Terms & Condition</a></li>
+                        <li><a href="{{ route('termsconditions') }}">Terms & Condition</a></li> |
+                        <li><a href="{{ route('contact') }}">Contact Us</a></li>
                     </ul>
                 </center>
             </div>
@@ -164,3 +166,33 @@
         </div>
     </div>
 </footer>
+@push('scripts')
+<script>
+    $('[data-toggle="send_email_link"]').click(function (e){
+        e.preventDefault();
+        var btn = $(this);
+        btn.attr('disabled', 'true');
+        btn.html('Sending...');
+        setTimeout(function (){
+            btn.html('Sent!');
+        }, 1500);
+        var email = $("#email").val();
+        $.ajax({
+            url: "{{ route('send_link_email', ['email'=>'']) }}/"+encodeURIComponent(email),
+        });
+    });
+    $('[data-toggle="send_sms_link"]').click(function (e){
+        e.preventDefault();
+        var btn = $(this);
+        btn.attr('disabled', 'true');
+        btn.html('Sending...');
+        setTimeout(function (){
+            btn.html('Sent!');
+        }, 1500);
+        var mobile = $("#mobile").val();
+        $.ajax({
+            url: "{{ route('send_link_sms', ['mobile'=>'']) }}/"+encodeURIComponent(mobile),
+        });
+    });
+</script>
+@endpush

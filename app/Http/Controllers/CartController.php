@@ -157,7 +157,7 @@ class CartController extends Controller
         if($request->payment_id != 'wallet'){
             $wallet_amt = $request->wallet_amt;
 
-            $api = new Api('rzp_test_FMKzS7xs08EwP5', 'MtWbDKF84Ak4DqrD6tcuaBHw');
+            $api = new Api($this->razorpay['key'], $this->razorpay['secret']);
             $payment = $api->payment->fetch($request->payment_id);
             $payment->capture(array('amount' => ($gtotal-$wallet_amt)*100));
 

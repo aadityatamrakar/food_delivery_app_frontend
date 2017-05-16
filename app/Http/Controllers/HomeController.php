@@ -17,11 +17,13 @@ class HomeController extends Controller
 
     public function index()
     {
-        if(Auth::check()){
-            return view('home');
-        }else{
-            return view('login');
-        }
+        return view('home');
+
+        //        if(Auth::check()){
+//            return view('home');
+//        }else{
+//            return view('login');
+//        }
 
     }
 
@@ -113,15 +115,16 @@ class HomeController extends Controller
         return $data;
     }
 
-    public function check_hours($hours, $restaurant)
+    public function check_hours($hours, $restaurant, $from_time = null)
     {
+        $check_time = $from_time!=null?Carbon::parse($from_time):Carbon::now();
         $time = json_decode($hours, true);
-        if(! isset($time[strtolower(Carbon::now()->format('D'))])) return false;
+        if(! isset($time[strtolower($check_time->format('D'))])) return false;
         else {
             $today = $time[strtolower(Carbon::now()->format('D'))];
-            $open = Carbon::now()->createFromFormat('Hi', $today['open_time']);
-            $close = Carbon::now()->createFromFormat('Hi', $today['close_time']);
-            return Carbon::now()->between($open, $close);
+            $open = $check_time->createFromFormat('Hi', $today['open_time']);
+            $close = $check_time->createFromFormat('Hi', $today['close_time']);
+            return $check_time->between($open, $close);
         }
     }
 }

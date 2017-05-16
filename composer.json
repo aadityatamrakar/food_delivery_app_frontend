@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "barryvdh/laravel-cors": "^0.8.2",
         "callr/sdk-php": "^0.9",
-        "razorpay/razorpay": "^2.0"
+        "razorpay/razorpay": "^2.0",
+        "guzzlehttp/guzzle":"*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -12,7 +12,8 @@ class LoginController extends Controller
 {
     public function index()
     {
-        return view('login');
+        return redirect()->route('home');
+        //return view('home');
     }
 
     public function login(Request $request)
@@ -20,12 +21,14 @@ class LoginController extends Controller
         $customer = Customer::where('mobile', $request->mobile)->first();
 
         if($customer != null){
-            if($request->pin == $customer->pin){
-                Auth::login($customer);
-                return redirect()->route('home');
-            }else{
-                return redirect()->route('login')->with(['info'=>"Invalid PIN", 'type'=>"warning"]);
-            }
+            Auth::login($customer);
+            return redirect()->route('home');
+//            if($request->pin == $customer->pin){
+//                Auth::login($customer);
+//                return redirect()->route('home');
+//            }else{
+//                return redirect()->route('login')->with(['info'=>"Invalid PIN", 'type'=>"warning"]);
+//            }
         }else{
             return redirect()->route('login')->with(['info'=>"User not registered with this mobile no.", 'type'=>"warning"]);
         }
@@ -33,6 +36,7 @@ class LoginController extends Controller
 
     public function postOtp(Request $request)
     {
+
         $mobile = urlencode($request->mobile);
         $otp = rand(100000, 999999);
         $message = urlencode("Verification Code: $otp , TromBoy.com");

@@ -12,11 +12,8 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
 
-    /**
-     * @param $mobile 10 Digit Mobile No
-     * @param $message 160 Char Message
-     * @return string
-     */
+    public $razorpay = ['key'=>"rzp_live_qrPgo4Roezywqb", 'secret'=>"BqwIdEKyTdhrERqdHxYV56v2"];
+
     public function SendSMS($mobile, $message)
     {
         $message = urlencode($message);

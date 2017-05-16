@@ -6,7 +6,7 @@
         {
             padding: 0;
             margin: 0;
-            background: url('https://images.pexels.com/photos/5928/salad-healthy-diet-spinach.jpg?w=940&h=650&auto=compress&cs=tinysrgb');
+            /*background: url('https://images.pexels.com/photos/5928/salad-healthy-diet-spinach.jpg?w=940&h=650&auto=compress&cs=tinysrgb');*/
             background-size: cover;
             background-position: center;
             padding-top: 160px;
@@ -206,52 +206,61 @@
 @endsection
 
 @section('content')
-    <div class="container" >
-        {{--@include('partials.notify')--}}
-        <div class="row">
-            <div class="col-md-12">
-                <div class="wrap">
-                    <center>
-                        <div class="mybox">
-                            <p class="form-title">
-                                Select Area & Order Information</p>
-                            <form class="login" id="search_frm" method="post" action="{{ route('restaurant.index') }}">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        <select name="city" id="city">
-                                            <option>City</option>
-                                            @foreach(\App\City::all() as $city)
-                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <input disabled autocomplete="off" id="area" name="area" type="text" data-provide="typeahead" value="Area" placeholder="Area" onfocus="this.value=='Area'?this.value='':''" />
-                                    </div>
-                                </div>
-                                <input id="area_id" name="area_id" type="hidden" />
-                                {!! csrf_field() !!}
-                                <div class="row text-primary text-left" style="padding: 5px 10px; font-size: 16px;">
-                                    <div class="col-sm-4">
-                                        <input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input id="pickup" name="type" type="radio" value="pickup" /> <label for="pickup"><b>Pickup</b></label>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <input id="dinein" name="type" type="radio" value="dinein" /> <label for="dinein"><b>Eat at Restaurant</b></label>
-                                    </div>
-                                </div>
-                                <input type="submit" value="Show Restaurants" id="sub_btn" class="btn myBtnClr btn-sm" />
-                            </form>
-                            <p style="margin: 0;">Currently, We are live in Satna.</p>
-                        </div>
-                    </center>
-                </div>
-            </div>
-        </div>
+    <div class="jumbotron">
+        <h2>Download Our app From Play store.</h2>
+        <a href="https://play.google.com/store/apps/details?id=com.tromboy" class="btn btn-md btn-primary">Download From Play Store</a>
     </div>
 @endsection
+
+{{--@section('content')--}}
+    {{--<div class="container" >--}}
+        {{--@include('partials.notify')--}}
+        {{--<div class="row">--}}
+            {{--<div class="col-md-12">--}}
+                {{--<div class="wrap">--}}
+                    {{--<center>--}}
+                        {{--<div class="mybox">--}}
+                            {{--<p class="form-title">--}}
+                                {{--Select Area & Order Information</p>--}}
+                            {{--<form class="login" id="search_frm" method="post" action="{{ route('restaurant.index') }}">--}}
+                                {{--<div class="row">--}}
+                                    {{--<div class="col-sm-6">--}}
+                                        {{--<select name="city" id="city">--}}
+                                            {{--<option>City</option>--}}
+                                            {{--@foreach(\App\City::all() as $city)--}}
+                                                {{--<option value="{{ $city->id }}">{{ $city->name }}</option>--}}
+                                            {{--@endforeach--}}
+                                        {{--</select>--}}
+                                    {{--</div>--}}
+                                    {{--<div class="col-sm-6">--}}
+                                        {{--<input disabled autocomplete="off" id="area" name="area" type="text" data-provide="typeahead" value="Area" placeholder="Area" onfocus="this.value=='Area'?this.value='':''" />--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                                {{--<input id="area_id" name="area_id" type="hidden" />--}}
+                                {{--{!! csrf_field() !!}--}}
+                                {{--<div class="row text-primary text-left" style="padding: 5px 10px; font-size: 16px;">--}}
+                                    {{--<div class="col-sm-4">--}}
+                                        {{--<input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>--}}
+                                    {{--</div>--}}
+                                    {{--<div class="col-sm-4">--}}
+                                        {{--<input id="pickup" name="type" type="radio" value="pickup" /> <label for="pickup"><b>Pickup</b></label>--}}
+                                    {{--</div>--}}
+                                    {{--<div class="col-sm-4">--}}
+                                        {{--<input id="dinein" name="type" type="radio" value="dinein" /> <label for="dinein"><b>Eat at Restaurant</b></label>--}}
+                                    {{--</div>--}}
+                                {{--</div>--}}
+                                {{--<input type="submit" value="Show Restaurants" id="sub_btn" class="btn myBtnClr btn-sm" />--}}
+                            {{--</form>--}}
+                            {{--<p style="margin: 0;">Currently, We are live in Satna.</p>--}}
+                        {{--</div>--}}
+                    {{--</center>--}}
+                {{--</div>--}}
+            {{--</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
+{{--@endsection--}}
+
+
 
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>

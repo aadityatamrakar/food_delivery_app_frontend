@@ -32,8 +32,10 @@ Route::group(['middleware' => 'auth'], function(){
     Route::post('/coupon/check', "HomeController@coupon_check")->name("coupon.check");
 });
 
-
-Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
+Route::group(['middleware' => 'api', 'prefix' => 'api/v2'], function () {
+    Route::get('/check', 'ApiController@check');
+    Route::get('/send_link/sms/{mobile}', "ApiController@send_link_sms")->name('send_link_sms');
+    Route::get('/send_link/email/{email}', "ApiController@send_link_email")->name('send_link_email');
     Route::post('/otp/request', "ApiController@api_postOtp");
     Route::post('/register', 'ApiController@register');
     Route::post('/login', 'ApiController@login');
@@ -55,14 +57,24 @@ Route::group(['middleware' => 'api', 'prefix' => 'api'], function () {
     Route::get('/restaurant/{area_id}/{type}', 'ApiController@get_restaurant');
 
     Route::get('/test', 'ApiController@test');
+    Route::get('/banner/get', 'ApiController@banner_get');
     Route::post('/confirm_sms', 'ApiController@confirm_sms');
     Route::get('/order_confirmation/{hash}', 'ApiController@get_restaurant_confirm_link')->name('order_confirm_link');
     Route::post('/order_confirmation/{hash}', 'ApiController@restaurant_confirm_link');
+
+    Route::group(['prefix' => 'railway'], function () {
+        Route::get('/pnr/{pnr}', 'ApiController@railway_pnr');
+        Route::get('/trains/{q}', 'ApiController@railway_trains');
+        Route::get('/stations/{q}', 'ApiController@railway_stations');
+        Route::get('/live/{q}/{date}', 'ApiController@railway_live');
+
+        Route::get('/restaurant/{city}', 'ApiController@get_restaurant_train');
+    });
 });
 
 Route::get('/help_and_support', 'WebsiteController@support')->name('helpsupport');
 Route::get('/privacy_policy', 'WebsiteController@privacypolicy')->name('privacypolicy');
 Route::get('/refunds_cancellations', 'WebsiteController@refundcancel')->name('refundcancel');
-
-
-
+Route::get('/terms_conditions', 'WebsiteController@terms')->name('termsconditions');
+Route::get('/about_us', 'WebsiteController@about')->name('about');
+Route::get('/contact_us', 'WebsiteController@contact')->name('contact');

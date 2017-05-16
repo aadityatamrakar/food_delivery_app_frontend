@@ -19,4 +19,19 @@ class WebsiteController extends Controller
     {
         return view('website.privacypolicy');
     }
+
+    public function terms()
+    {
+        return view('website.termsconditions');
+    }
+
+    public function about()
+    {
+        return view('website.about');
+    }
+
+    public function contact()
+    {
+        return view('website.contact');
+    }
 }
