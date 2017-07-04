@@ -16,14 +16,11 @@
 
         body{
             width: 100%;
-            background: url('/img/bg.jpg') no-repeat;
-            background-size: cover;
-            background-position: center;
-            /*background: -webkit-linear-gradient(left, #22d686, #24d3d3, #22d686, #24d3d3);*/
-            /*background: linear-gradient(to right, #22d686, #24d3d3, #22d686, #24d3d3);*/
-            /*background-size: 600% 100%;*/
-            /*-webkit-animation: HeroBG 20s ease infinite;*/
-            /*animation: HeroBG 5s ease infinite;*/
+            background: -webkit-linear-gradient(left, #22d686, #24d3d3, #22d686, #24d3d3);
+            background: linear-gradient(to right, #22d686, #24d3d3, #22d686, #24d3d3);
+            background-size: 600% 100%;
+            -webkit-animation: HeroBG 20s ease infinite;
+            animation: HeroBG 5s ease infinite;
         }
 
         @-webkit-keyframes HeroBG {
@@ -169,7 +166,7 @@
         .panel-login select, .panel-login input[type="text"],.panel-login input[type="number"], .panel-login input[type="email"],.panel-login input[type="password"] {
             height: 45px;
             border: 0;
-            font-size: 16px;
+            font-size: 12px;
             -webkit-transition: all 0.1s linear;
             -moz-transition: all 0.1s linear;
             transition: all 0.1s linear;
@@ -251,7 +248,7 @@
                                 <form id="login_form" action="{{ route('login') }}" method="post" role="form" style="display: block;">
                                     <h2 class="text-warning">Already a Member ? Please Login with your details</h2>
                                     <div class="form-group">
-                                        <input type="number" name="mobile" id="mobile" class="form-control" placeholder="Mobile No.">
+                                        <input type="number" name="mobile" id="mobile" data-mobile="yes" class="form-control" placeholder="Mobile No.">
                                         <span class="help-block text-danger"></span>
                                     </div>
                                     <div class="form-group">
@@ -269,38 +266,26 @@
                                         <span class="help-block text-danger"></span>
                                     </div>
                                     <div class="form-group">
-                                        <input type="number" name="mobile_reg" id="mobile_reg" class="form-control" placeholder="Mobile No.">
+                                        <input type="number" name="mobile_reg" id="mobile_reg" data-mobile="yes" class="form-control" placeholder="Mobile No.">
+                                        <span class="help-block text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="number" onkeyup="if(this.value.length == 4) $('#address').focus();" name="pin_reg" id="pin_reg" data-toggle="tooltip" data-placement="top" title="4 digit PIN" class="form-control" maxlength="4" placeholder="Set 4 Digit Login PIN">
+                                        <span class="help-block text-danger"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="address" id="address" class="form-control" placeholder="Address ">
                                         <span class="help-block text-danger"></span>
                                     </div>
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-xs-6">
-                                                <input type="password" onkeyup="if(this.value.length == 4) $('#pin-verify').focus();" name="pin_reg" id="pin_reg" data-toggle="tooltip" data-placement="top" title="_/\_" class="form-control" placeholder="Enter 4 Digit TS PIN">
-                                                <span class="help-block text-danger"></span>
-                                            </div>
-                                            <div class="col-xs-6">
-                                                <input type="password" name="pin-verify" id="pin-verify" class="form-control" placeholder="Verify PIN">
-                                                <span class="help-block text-danger"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" name="address" id="address" class="form-control" placeholder="Address Line 1 (House No. / Building)">
-                                        <span class="help-block text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <input type="text" name="address_2" id="address_2" class="form-control" placeholder="Address Line 2 (Colony, Locality, Street)">
-                                        <span class="help-block text-danger"></span>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="row">
-                                            <div class="col-xs-8">
+                                            <div class="col-md-6">
                                                 <input type="email" name="email" id="email" class="form-control" placeholder="Email">
                                                 <span class="help-block text-danger"></span>
                                             </div>
-                                            <div class="col-xs-4">
+                                            <div class="col-md-6">
                                                 <select name="city" id="city" class="form-control">
-                                                    <option>--CITY--</option>
+                                                    <option>CITY</option>
                                                     @foreach(\App\City::all() as $city)
                                                         <option value="{{ $city->id }}">{{ $city->name }}</option>
                                                     @endforeach
@@ -310,9 +295,9 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="row">
-                                            <div class="col-xs-6">
+                                            <div class="col-xs-9">
                                                 <input type="checkbox" checked id="tc_check">
-                                                I agree to the <a href="#">T&C's</a>
+                                                I agree to the <a href="{{ route('termsconditions') }}">T&C's</a>
                                             </div>
                                         </div>
                                     </div>
@@ -337,10 +322,10 @@
                     <div class="panel-heading">
                         <div class="row">
                             <div class="col-xs-6 tabs">
-                                <a href="#" class="active" id="login_form-link"><div class="login">Already a Member ? Login </div></a>
+                                <a href="#" class="active" id="login_form-link"><div class="login">Already a Member? Login </div></a>
                             </div>
                             <div class="col-xs-6 tabs">
-                                <a href="#" id="register-form-link"><div class="register">Not a member yet ? Register Now</div></a>
+                                <a href="#" id="register-form-link"><div class="register">Not a member yet? Register Now</div></a>
                             </div>
                         </div>
                     </div>
@@ -362,6 +347,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="resent_otp">Resend OTP</button>
                     <button type="button" class="btn btn-success" id="verify_button">Verify</button>
                 </div>
             </div><!-- /.modal-content -->
@@ -407,7 +393,7 @@
             $('[data-toggle="tooltip"]').tooltip();
         });
 
-        $('input[type="number"]').on('blur', function (){
+        $('input[type="number"][data-mobile="yes"]').on('blur', function (){
             if( $(this).val() != 0 && $(this).val().length != 10) {
                 show_error(this, 'Please enter valid 10 digit mobile no.');
             }else{
@@ -442,14 +428,11 @@
             }
         });
 
-        $("#pin-verify").on('keyup', function(){
-            if(this.value.length == 4 && this.value==$('#pin_reg').val()){
-                $(this).parent().children()[1].innerHTML = '';
-                $('#address').focus();
-            }else if(this.value.length==4 && this.value!=$('#pin_reg').val()){
-                show_error(this, "PIN does not match.");
-            }
-        });
+        $("#resent_otp").on('click', function (){
+            request_otp($("#mobile_reg").val(), function (){
+                $('#otp_c').attr('placeholder', 'Resent! Enter OTP Recieved in '+$("#mobile_reg").val());
+            });
+        })
 
         function request_otp(m, callback){
             waitingDialog.show('Sending OTP...', {dialogSize: 'sm', progressType: 'primary'});
@@ -470,14 +453,14 @@
         });
 
         $("#verify_button").click(function (){
-            if($("#otp_c").val().length == 6) {
+            if($("#otp_c").val().length == 4) {
                 $("#otp_reg").val($('#otp_c').val());
                 $.ajax({
                     url: '{{ route('register') }}',
                     type: 'POST',
                     data: {
                         name: $("#name").val(),
-                        address: $("#address").val()+', '+$("#address_2").val(),
+                        address: $("#address").val(),
                         pin: $("#pin_reg").val(),
                         email: $("#email").val(),
                         city: $("#city").val(),
@@ -501,22 +484,18 @@
             e.preventDefault();
             if($("#name").val().length != 0) {
                 if($("#address").val().length != 0) {
-                    if($("#address_2").val().length != 0) {
-                        if($("#mobile_reg").val().length != 0 && $("#mobile_reg").val().length == 10) {
-                            if($("#pin_reg").val().length != 0) {
-                                if($("#pin-verify").val().length != 0 && $("#pin-verify").val() == $("#pin_reg").val()) {
-                                    if($("#city").val() != '--CITY--'){
-                                        request_otp($("#mobile_reg").val(), function (){
-                                            $('#otpmodal').modal('show');
-                                            $('#otp_c').attr('placeholder', 'Enter OTP Recieved in '+$("#mobile_reg").val());
-                                        });
-                                    }else show_error($("#city")[0], 'Select City');
-                                }else show_error($("#pin-verify")[0], 'PIN does not match');
-                            }else show_error($("#pin_reg")[0], 'PIN is required');
-                        }else show_error($("#mobile_reg")[0], 'Enter a valid 10 digit mobile no.');
-                    }else show_error($("#address_2")[0], 'Address Line 2 is required.');
-                }else show_error($("#address")[0], 'Address Line 1 is required.');
-            }else show_error($("#address_2")[0], 'Name is required.');
+                    if($("#mobile_reg").val().length == 10) {
+                        if($("#pin_reg").val().length != 0) {
+                            if($("#city").val() != 'CITY'){
+                                request_otp($("#mobile_reg").val(), function (){
+                                    $('#otpmodal').modal('show');
+                                    $('#otp_c').attr('placeholder', 'Enter OTP Recieved in '+$("#mobile_reg").val());
+                                });
+                            }else show_error($("#city")[0], 'Select City');
+                        }else show_error($("#pin_reg")[0], 'PIN is required');
+                    }else show_error($("#mobile_reg")[0], 'Enter a valid 10 digit mobile no.');
+                }else show_error($("#address")[0], 'Address is required.');
+            }else show_error($("#name")[0], 'Name is required.');
         });
 
         function show_error(t, e, a)

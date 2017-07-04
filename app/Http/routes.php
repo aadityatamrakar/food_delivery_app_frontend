@@ -57,10 +57,17 @@ Route::group(['middleware' => 'api', 'prefix' => 'api/v2'], function () {
     Route::get('/restaurant/{area_id}/{type}', 'ApiController@get_restaurant');
 
     Route::get('/test', 'ApiController@test');
+    Route::get('/test_call/{m}', 'ApiController@test_call');
+    Route::post('/callback_url', 'ApiController@callback_url');
     Route::get('/banner/get', 'ApiController@banner_get');
     Route::post('/confirm_sms', 'ApiController@confirm_sms');
     Route::get('/order_confirmation/{hash}', 'ApiController@get_restaurant_confirm_link')->name('order_confirm_link');
     Route::post('/order_confirmation/{hash}', 'ApiController@restaurant_confirm_link');
+
+
+    Route::post('/referral/customer/save', 'ApiController@referral_post')->name('referral_save');
+    Route::get('/referral/customer', 'ApiController@referral_page');
+    Route::post('/referral/customer/otp', 'ApiController@get_referral_otp')->name('referral_otp');
 
     Route::group(['prefix' => 'railway'], function () {
         Route::get('/pnr/{pnr}', 'ApiController@railway_pnr');
@@ -78,3 +85,4 @@ Route::get('/refunds_cancellations', 'WebsiteController@refundcancel')->name('re
 Route::get('/terms_conditions', 'WebsiteController@terms')->name('termsconditions');
 Route::get('/about_us', 'WebsiteController@about')->name('about');
 Route::get('/contact_us', 'WebsiteController@contact')->name('contact');
+Route::get('/careers', 'WebsiteController@careers')->name('careers');

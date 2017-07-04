@@ -7,6 +7,7 @@ use App\Banner;
 use App\City;
 use App\Coupon;
 use App\Customer;
+use App\Leads;
 use App\Stations;
 use App\Train;
 use App\wallet;
@@ -204,7 +205,8 @@ class ApiController extends Controller
             return ['status'=>"no_restaurant_open", 'info'=>"Sorry, Currently no restaurant is delivering in this location."];
         }
 
-        return compact(['restaurants', 'closed']);
+        //return compact(['restaurants', 'closed']);
+        return compact(['restaurants']);
     }
     public function get_restaurant_train($city)
     {
@@ -427,11 +429,83 @@ class ApiController extends Controller
     {
 
     }
+    public function test_call($m)
+    {
+        $login = 'spantechnologies_1';
+        $password = 'wVAZcLFbFZ';
+
+        $api = new \CALLR\API\Client();
+        $api->setAuthCredentials($login, $password);
+
+        $options = (object) [
+            'url' => 'https://tromboy.com/api/v2/callback_url'
+        ];
+
+        $app = $api->call('apps.create', ['REALTIME10', 'tromboy', $options]);
+
+        $target = (object) [
+            'number' => '+91'.$m,
+            'timeout' => 30
+        ];
+
+        $options = (object) [
+            'cdr_field' => 'userData',
+            'cli' => 'BLOCKED'
+        ];
+
+        return $result = $api->call('calls.realtime', [$app->hash, $target, $options]);
+    }
+
+    public function callback_url()
+    {
+        $request = $this->get_parameters();
+        Storage::disk('local')->append('callr.txt', json_encode($request));
+
+        if($request['call_status'] == 'UP' && $request['command_id'] == '0')
+        {
+            $data = [
+                'command'=>"read",
+                "command_id"=>1,
+                "params"=>[
+                    "media_id"=>"TTS|TTS_EN-GB_SERENA|Do you want to know about G S T, press one to get a callback",
+                    "max_digits"=>1,
+                    "attempts"=>1,
+                    "timeout_ms"=>3000
+                ],
+            ];
+        }else if($request['command_id'] == '1'){
+            if($request['command_result'] == '1'){
+                $data = [
+                    'command'=>"play",
+                    "command_id"=>2,
+                    "params"=>[
+                        "media_id"=>"TTS|TTS_EN-GB_SERENA|Thanks Confirmed",
+                    ],
+                ];
+            }else{
+                $data = [
+                    'command'=>"hangup",
+                    "command_id"=>3,
+                    "params"=>(object)[],
+                ];
+            }
+        }else{
+            $data = [
+                'command'=>"hangup",
+                "command_id"=>3,
+                "params"=>(object)[],
+            ];
+        }
+
+        Storage::disk('local')->append('callr.txt', json_encode($data));
+
+        return ($data);
+    }
     public function confirm_order_link($id)
     {
         $data = ["conf", $id];
         $encryptedValue = Crypt::encrypt(json_encode($data));
-        $longUrl = 'http://tromboy.com/api/order_confirmation/'.$encryptedValue;
+        $longUrl = 'http://tromboy.com/api/v2/order_confirmation/'.$encryptedValue;
         $url = $this->short_url($longUrl);
         return str_replace('https://', '', $url->id);
     }
@@ -640,4 +714,37 @@ class ApiController extends Controller
         return 'sent!';
     }
     public function check() { return 'jai_mata_di'; }
+
+    public function referral_page()
+    {
+        return view('referral.customer');
+    }
+
+    public function get_referral_otp(\Illuminate\Http\Request $request)
+    {
+        $v = Validator::make($request->all(), [
+            "mobile"    =>  "required|unique:leads,mobile",
+        ]);
+
+        if($v->fails()){
+            return ['status'=>"already_registered"];
+        }else{
+            $otp = rand(100, 999);
+            $this->SendSMS($request->mobile, "Your OTP is ".$otp." by giving this otp to our promoter, you allow TromBoy Promotional messages.");
+            return ['otp'=>$otp];
+        }
+    }
+
+    public function referral_post(\Illuminate\Http\Request $request)
+    {
+        $this->validate($request, [
+            "name"      =>  "required",
+            "address"   =>  "required",
+            "mobile"    =>  "required|unique:leads,mobile",
+            "type"      =>  "required",
+        ]);
+
+        $leads = Leads::create($request->all());
+        return ['status'=>"referral registered successfully."];
+    }
 }

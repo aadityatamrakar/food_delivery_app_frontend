@@ -141,15 +141,15 @@ class CartController extends Controller
         /*
          * Notify Restaurant
          */
-        $confirm_link = $api->confirm_order_link($order->id);
-        $restaurant_message = "NEW:".$order->id.", Name:".substr($customer->name, strpos($customer->name, ' '))."(".$customer->mobile."), ".$order->address.", Cart: [";
+        $confirm_link = $this->confirm_order_link($order->id);
+        $restaurant_message = $order->id.", Type: ".$order->deliver.", Name:".$customer->name."(".$customer->mobile.', '.$order->mobile2."), ".$order->address.", Cart: [";
         for($i=0; $i<count($cart); $i++)
             $restaurant_message .= $cart[$i]['title'].'-'.$cart[$i]['quantity'].', ';
-        $restaurant_message .= "] Amt: ".$gtotal.". To confirm order send '68J8D conf ".$order->id."' to 9220592205 or ".$confirm_link;
+        $restaurant_message .= "]. Click ".$confirm_link." to confirm. Amount to take: ";
         $this->SendSMS($restaurant->contact_no, $restaurant_message);
         // $this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
         $api = new ApiController();
-        //$this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
+        $this->callr($restaurant->contact_no, "You have got a new order, TromBoy");
         Mail::send('emails.restaurant.new_order', ['order' => $order, 'confirm_link'=>$confirm_link, 'cart'=>$cart], function ($m) use ($order) {
             $m->to($order->restaurant->email, $order->restaurant->name)->subject("New Order Details");
         });

@@ -62,32 +62,15 @@
                 </center>
             </div>
         </div>
-        <center>
-            <h3>Message Gateway by MSG91!</h3>
-            <a href="https://msg91.com/startups/?utm_source=startup-banner"><img src="https://msg91.com/images/startups/msg91Badge.png" width="120" height="90" title="MSG91 - SMS for Startups" alt="Bulk SMS - MSG91"></a>
-        </center>
     </div>
 </div>
 <div class="container-fluid app_bg" style="padding: 20px 0px;">
     <div class="container">
         <div class="row">
-            <div class="col-md-6 text-right">
-                <center><img height="300px" src="/img/phone.png" /></center>
-            </div>
-            <div class="col-md-6">
-                <h3>Looking for the Food Feed ? Get the app!</h3>
-                <p class="text-mute">Follow foodies to see their. this is some text. </p>
-                <br/>
-                <p class="text-mute">We'll send you a link, Click on it to download the app.</p>
+            <div class="col-md-8 col-md-offset-2">
+                <h3>Avail exclusive offers only on TromBoy app. Get link to download the app NOW!</h3>
                 <div class="row">
-                    <div class="col-md-8">
-                        <div class="input-group">
-                            <input type="email" class="form-control" placeholder="Enter your Email address." id="email" name="email">
-                            <span class="input-group-btn">
-                                <button class="btn btn-warning" type="button" data-toggle="send_email_link">Send Email!</button>
-                            </span>
-                        </div><!-- /input-group -->
-                        <hr/>
+                    <div class="col-md-8 col-md-offset-2">
                         <div class="input-group">
                             <span class="input-group-addon" id="sizing-addon1">+91</span><input type="text" class="form-control" placeholder="Enter your Mobile number." id="mobile" name="mobile">
                             <span class="input-group-btn">
@@ -96,6 +79,8 @@
                         </div><!-- /input-group -->
                     </div>
                 </div>
+                <br/>
+                <center><a class="btn btn-primary btn-md"><i class="fa fa-android fa-2x"></i> Google Play</a></center>
             </div>
         </div>
     </div>
@@ -103,30 +88,30 @@
 
 <footer class="container-fluid" style=" border-top: 1px solid #ddd; padding: 20px 0px;">
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <h1 style="color: white;">Subscribe to our newsletter</h1>
-                <form action="//Tromboy.us15.list-manage.com/subscribe/post?u=2b73e95cbe79f03d5079d62b3&amp;id=cbe7f66a37" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>
-                    <div class="row">
-                        <div class="col-xs-6">
-                            <input type="email" name="EMAIL" class="form-control" placeholder="Email Address" required>
-                            <input type="hidden" name="b_2b73e95cbe79f03d5079d62b3_cbe7f66a37" tabindex="-1" value="">
-                        </div>
-                        <div class="col-xs-6">
-                            <input type="submit" value="Subscribe" name="subscribe" class="btn btn-primary">
-                        </div>
-                    </div>
-                </form>
+        {{--<div class="row">--}}
+            {{--<div class="col-md-6">--}}
+                {{--<h1 style="color: white;">Subscribe to our newsletter</h1>--}}
+                {{--<form action="//Tromboy.us15.list-manage.com/subscribe/post?u=2b73e95cbe79f03d5079d62b3&amp;id=cbe7f66a37" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate" target="_blank" novalidate>--}}
+                    {{--<div class="row">--}}
+                        {{--<div class="col-xs-6">--}}
+                            {{--<input type="email" name="EMAIL" class="form-control" placeholder="Email Address" required>--}}
+                            {{--<input type="hidden" name="b_2b73e95cbe79f03d5079d62b3_cbe7f66a37" tabindex="-1" value="">--}}
+                        {{--</div>--}}
+                        {{--<div class="col-xs-6">--}}
+                            {{--<input type="submit" value="Subscribe" name="subscribe" class="btn btn-primary">--}}
+                        {{--</div>--}}
+                    {{--</div>--}}
+                {{--</form>--}}
 
-            </div>
-            <div class="col-md-6 text-right pull-right">
-                <h4 style="color: white;">Restaurant Owner ?</h4>
-                <p>Join the TromBoy network <br/>and increase your sales</p>
-                <a href="https://goo.gl/forms/TwN7ORb5G1qxZRIA2" target="_blank" class="btn btn-primary">Submit Request</a>
-            </div>
-        </div>
+            {{--</div>--}}
+            {{--<div class="col-md-6 text-right pull-right">--}}
+                {{--<h4 style="color: white;">Restaurant Owner ?</h4>--}}
+                {{--<p>Join the TromBoy network <br/>and increase your sales</p>--}}
+                {{--<a href="http://t3b.in/partnerwithus" target="_blank" class="btn btn-primary">Submit Request</a>--}}
+            {{--</div>--}}
+        {{--</div>--}}
 
-        <hr/>
+        {{--<hr/>--}}
 
         <div class="row">
 
@@ -147,7 +132,8 @@
                 <center>
                     <ul>
                         <li><a href="{{ route('about') }}">About Us</a></li> |
-                        <li><a target="_blank" href="https://goo.gl/forms/TwN7ORb5G1qxZRIA2">Partner with Us</a></li> |
+                        <li><a href="{{ route('careers') }}">Careers</a></li> |
+                        <li><a target="_blank" href="http://t3b.in/partnerwithus">Partner with Us</a></li> |
                         <li><a href="{{ route('helpsupport') }}">Help & Support</a></li> |
                         <li><a href="{{ route('refundcancel') }}">Refunds & Cancellation Policy</a></li> |
                         <li><a href="{{ route('privacypolicy') }}">Privacy Policy</a></li> |

@@ -21,14 +21,12 @@ class LoginController extends Controller
         $customer = Customer::where('mobile', $request->mobile)->first();
 
         if($customer != null){
-            Auth::login($customer);
-            return redirect()->route('home');
-//            if($request->pin == $customer->pin){
-//                Auth::login($customer);
-//                return redirect()->route('home');
-//            }else{
-//                return redirect()->route('login')->with(['info'=>"Invalid PIN", 'type'=>"warning"]);
-//            }
+            if($request->pin == $customer->pin){
+                Auth::login($customer);
+                return redirect()->route('home');
+            }else{
+                return redirect()->route('login')->with(['info'=>"Invalid PIN", 'type'=>"warning"]);
+            }
         }else{
             return redirect()->route('login')->with(['info'=>"User not registered with this mobile no.", 'type'=>"warning"]);
         }
@@ -38,11 +36,10 @@ class LoginController extends Controller
     {
 
         $mobile = urlencode($request->mobile);
-        $otp = rand(100000, 999999);
+        $otp = rand(1000, 9999);
         $message = urlencode("Verification Code: $otp , TromBoy.com");
-        //$this->SendSMS($mobile, $message);
+        $this->SendSMS($mobile, $message);
         otp::create(['mobile'=>$request->mobile,'otp'=>$otp, 'res'=>'1']);
-        //header('otp: '.$otp);
 
         return ['status'=>'ok'];
     }

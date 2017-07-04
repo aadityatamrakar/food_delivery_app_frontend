@@ -198,7 +198,7 @@
         function submit_form()
         {
             var options = {
-                "key": "rzp_test_FMKzS7xs08EwP5",
+                "key": "rzp_live_qrPgo4Roezywqb",
                 "amount": gtotal*100,
                 "name": "TromBoy",
                 "description": "Purchase From {{ \App\Restaurant::find(Request::get('restaurant_id'))->name }}",

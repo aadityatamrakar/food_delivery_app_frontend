@@ -201,66 +201,60 @@
     </style>
 @endsection
 
-@section('header_right')
-    <a class="pull-right" href="https://msg91.com/startups/?utm_source=startup-banner"><img src="https://msg91.com/images/startups/msg91Badge.png" width="80" height="60" title="MSG91 - SMS for Startups" alt="Bulk SMS - MSG91"></a>
-@endsection
-
-@section('content')
+{{--@section('content')
     <div class="jumbotron">
         <h2>Download Our app From Play store.</h2>
         <a href="https://play.google.com/store/apps/details?id=com.tromboy" class="btn btn-md btn-primary">Download From Play Store</a>
     </div>
-@endsection
+@endsection--}}
 
-{{--@section('content')--}}
-    {{--<div class="container" >--}}
-        {{--@include('partials.notify')--}}
-        {{--<div class="row">--}}
-            {{--<div class="col-md-12">--}}
-                {{--<div class="wrap">--}}
-                    {{--<center>--}}
-                        {{--<div class="mybox">--}}
-                            {{--<p class="form-title">--}}
-                                {{--Select Area & Order Information</p>--}}
-                            {{--<form class="login" id="search_frm" method="post" action="{{ route('restaurant.index') }}">--}}
-                                {{--<div class="row">--}}
-                                    {{--<div class="col-sm-6">--}}
-                                        {{--<select name="city" id="city">--}}
-                                            {{--<option>City</option>--}}
-                                            {{--@foreach(\App\City::all() as $city)--}}
-                                                {{--<option value="{{ $city->id }}">{{ $city->name }}</option>--}}
-                                            {{--@endforeach--}}
-                                        {{--</select>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="col-sm-6">--}}
-                                        {{--<input disabled autocomplete="off" id="area" name="area" type="text" data-provide="typeahead" value="Area" placeholder="Area" onfocus="this.value=='Area'?this.value='':''" />--}}
-                                    {{--</div>--}}
-                                {{--</div>--}}
-                                {{--<input id="area_id" name="area_id" type="hidden" />--}}
-                                {{--{!! csrf_field() !!}--}}
-                                {{--<div class="row text-primary text-left" style="padding: 5px 10px; font-size: 16px;">--}}
-                                    {{--<div class="col-sm-4">--}}
-                                        {{--<input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>--}}
-                                    {{--</div>--}}
-                                    {{--<div class="col-sm-4">--}}
-                                        {{--<input id="pickup" name="type" type="radio" value="pickup" /> <label for="pickup"><b>Pickup</b></label>--}}
-                                    {{--</div>--}}
+@section('content')
+    <div class="container" style="height: 400px;" >
+        @include('partials.notify')
+        <div class="row">
+            <div class="col-md-12">
+                <div class="wrap">
+                    <center>
+                        <div class="mybox">
+                            <p class="form-title">
+                                Select Area & Order Information</p>
+                            <form class="login" id="search_frm" method="post" action="{{ route('restaurant.index') }}">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <select name="city" id="city">
+                                            <option>City</option>
+                                            @foreach(\App\City::all() as $city)
+                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input disabled autocomplete="off" id="area" name="area" type="text" data-provide="typeahead" value="Area" placeholder="Area" onfocus="this.value=='Area'?this.value='':''" />
+                                    </div>
+                                </div>
+                                <input id="area_id" name="area_id" type="hidden" />
+                                {!! csrf_field() !!}
+                                <div class="row text-primary text-left" style="padding: 5px 10px; font-size: 16px;">
+                                    <div class="col-sm-6">
+                                        <input id="delivery" name="type" type="radio" value="delivery" /> <label for="delivery"><b>Delivery</b></label>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input id="pickup" name="type" type="radio" value="pickup" /> <label for="pickup"><b>Takeaway</b></label>
+                                    </div>
                                     {{--<div class="col-sm-4">--}}
                                         {{--<input id="dinein" name="type" type="radio" value="dinein" /> <label for="dinein"><b>Eat at Restaurant</b></label>--}}
                                     {{--</div>--}}
-                                {{--</div>--}}
-                                {{--<input type="submit" value="Show Restaurants" id="sub_btn" class="btn myBtnClr btn-sm" />--}}
-                            {{--</form>--}}
+                                </div>
+                                <input type="submit" value="Show Restaurants" id="sub_btn" class="btn myBtnClr btn-sm" />
+                            </form>
                             {{--<p style="margin: 0;">Currently, We are live in Satna.</p>--}}
-                        {{--</div>--}}
-                    {{--</center>--}}
-                {{--</div>--}}
-            {{--</div>--}}
-        {{--</div>--}}
-    {{--</div>--}}
-{{--@endsection--}}
-
-
+                        </div>
+                    </center>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
 
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-3-typeahead/4.0.2/bootstrap3-typeahead.min.js"></script>

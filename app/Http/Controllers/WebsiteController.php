@@ -34,4 +34,9 @@ class WebsiteController extends Controller
     {
         return view('website.contact');
     }
+
+    public function careers()
+    {
+        return view('website.careers');
+    }
 }
